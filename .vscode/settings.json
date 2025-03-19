@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "brick-aiar.sln"
+    "dotnet.defaultSolution": "brick-aiar.sln",
+    "dotnet.preferCSharpExtension": true
 }
