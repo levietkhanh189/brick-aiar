@@ -32,12 +32,12 @@ public class LEGOExporter : MonoBehaviour
             {
                 string fileName = Path.GetFileName(assetPath);
                 string fileType = asset.GetType().Name;
-                componentsInfo.Add($"Tên: {fileName}, Loại: {fileType}, Đường dẫn: {assetPath}");
+                componentsInfo.Add($"{fileName.Replace(".fbx","")},");
             }
         }
         
         // Xuất danh sách ra file
-        string exportPath = Application.dataPath + "/../LEGOComponents.txt";
+        string exportPath = Application.dataPath + "/LEGOComponents.txt";
         File.WriteAllLines(exportPath, componentsInfo.ToArray());
         
         Debug.Log($"Đã xuất {guids.Length} linh kiện LEGO ra file: {exportPath}");
