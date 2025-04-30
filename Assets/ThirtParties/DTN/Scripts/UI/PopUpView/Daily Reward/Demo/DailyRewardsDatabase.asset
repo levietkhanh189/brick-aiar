@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 979a1ce13f956e2478d9e18a1cc6d8e1, type: 3}
+  m_Name: DailyRewardsDatabase
+  m_EditorClassIdentifier: 
+  DailyRewardsDatas:
+  - Day: 0
+    RewardName: +500
+    Icon: {fileID: 21300000, guid: c6f8bbbe787834b7b89c808d7de27aaf, type: 3}
+    Amount: 500
+  - Day: 1
+    RewardName: +1000
+    Icon: {fileID: 21300000, guid: c6f061c762c2e40f3946c50e6838270a, type: 3}
+    Amount: 1000
+  - Day: 2
+    RewardName: +1500
+    Icon: {fileID: 21300000, guid: c30fde179e4ee4ee1a83ccbdfee08ecf, type: 3}
+    Amount: 1500
+  - Day: 3
+    RewardName: +2000
+    Icon: {fileID: 21300000, guid: f6ae23f3ca1a74aaa8637e8391d9ea56, type: 3}
+    Amount: 2000
+  - Day: 4
+    RewardName: +2500
+    Icon: {fileID: 21300000, guid: 730796cd5129b4b9da2452862b72062e, type: 3}
+    Amount: 2500
+  - Day: 5
+    RewardName: +3000
+    Icon: {fileID: 21300000, guid: f77d43957919c47238bd39a4e37696c4, type: 3}
+    Amount: 3000
+  dayTime: 86400
