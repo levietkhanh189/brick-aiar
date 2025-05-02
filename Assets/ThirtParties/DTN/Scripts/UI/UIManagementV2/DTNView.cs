@@ -99,7 +99,12 @@ public abstract class DTNView : DTNMono
 
         return ShowSubView(initView) as T;
     }
+    public virtual DTNView ShowSubView(string viewName)
+    {
+        DTNView initView = DTNInitView._instance.Init(viewName, content);
 
+        return ShowSubView(initView);
+    }
     public virtual DTNView ShowSubView(System.Type type)
     {
         DTNView initView = DTNInitView._instance.Init(type, content);

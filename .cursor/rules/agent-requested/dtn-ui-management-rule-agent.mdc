@@ -1,0 +1,75 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Template and organizational requirements for creating Cursor Rules files
+globs: .cursor/rules/**/*.mdc
+alwaysApply: false
+---
+
+# Cursor Rules Format
+
+## Context
+
+- Apply this rule when creating or editing any Cursor Rules file.
+ll a consisted actionable format for agent comprehension and application.
+- Added to standardize rule authoring bility.
+
+## Critical Rules
+
+- All rule files must be located and named as: `.cursor/rules/{organizational-folder}/rule-name-{auto|agent|manual|always}.mdc`
+- The front matter section must always start the file and include all 3 fields: description, globs, alwaysApply.
+- Rule types:
+  - Manual Rule: description and globs MUST be blank, alwaysApply: false, filename ends with -manual.mdc.
+  - Auto Rule: description blank, alwaysApply: false, filename ends with -auto.mdc.
+  - Always Rule: description and globs blank, alwaysApply: true, filename ends with -always.mdc.
+  - Agent Select Rule: description is critical, globs blank, alwaysApply: false, filename ends with -agent.mdc.
+- Use concise markdown tailored for agent context window usage.
+- Do not repeat content or be overly explanatory in context or bullets.
+- When a rule is not always used (alwaysApply: false), the description must clearly state when the agent should load the rule.
+- Indent all content within XML Example sections by 2 spaces.
+- Emojis and Mermaid diagrams are allowed if they improve agent comprehension.
+- Keep total rule line count under 50 lines, ideally under 25.
+- Always include a valid and invalid example.
+- NEVER use quotes around glob patterns, NEVER group glob extensions with `{}`.
+- After creating or updating a rule, respond with:
+  - AutoRuleGen Success: path/rule-name.mdc
+  - Rule Type: {Rule Type}
+  - Short summary of what the rule will do
+
+## Examples
+
+<example>
+---
+description: Example rule for C# files
+globs: *.cs
+alwaysApply: false
+---
+
+# C# File Standards
+
+## Context
+
+- Apply to all C# source files.
+
+## Critical Rules
+
+- Use PascalCase for class names.
+- Use camelCase for private fields.
+
+<example type="invalid">
+---
+description: "Wrong"
+globs: "*.cs"
+alwaysApply: false
+---
+
+# Bad Example
+
+## Context
+
+- Too verbose and uses quotes around globs.
+</example>
+</example>
