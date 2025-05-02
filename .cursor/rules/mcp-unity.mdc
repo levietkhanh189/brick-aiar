@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# MCP Unity Integration & Server Tools
+
+## Context
+
+- Apply when working in Unity projects with MCP integration, especially in VSCode-like IDEs (VSCode, Cursor, Windsurf).
+- Use when automating Unity Editor tasks, querying project/package info, or manipulating GameObjects/components via IDE.
+- Added to clarify available automation endpoints and improve agent's ability to leverage Unity's MCP server features.
+
+## Critical Rules
+
+- Use MCP server tools for automating Unity Editor actions (menu execution, GameObject/component manipulation, package management, test running, logging, asset instantiation).
+- Use MCP server resources for querying menu items, hierarchy, GameObject/component details, logs, packages, assets, and tests.
+- Prefer these endpoints for automation and introspection over manual file/script edits when possible.
+- Always provide clear, actionable prompts/examples for each tool/resource when suggesting their use.
+
+## Examples
+
+<example>
+Prompt: "Add a Rigidbody component to the Player object and set its mass to 5"
+Action: Use `update_component` tool with target GameObject and component/field data.
+</example>
+
+<example type="invalid">
+Prompt: "Manually edit the Player script to add a Rigidbody"
+Mistake: Did not use the available MCP automation tool for component addition.
+</example>

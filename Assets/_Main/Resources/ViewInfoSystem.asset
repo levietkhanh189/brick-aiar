@@ -17,14 +17,18 @@ MonoBehaviour:
     Address: Views/AICraftMenuScreen
   - ViewName: AICraftOptionPopup
     Address: Views/AICraftOptionPopup
+  - ViewName: IntroScreen
+    Address: Views/IntroScreen
   - ViewName: InventoryScreen
     Address: Views/InventoryScreen
   - ViewName: LoadingScreen
     Address: Views/LoadingScreen
-  - ViewName: LoginScreen
-    Address: Views/LoginScreen
   - ViewName: MainScreen
     Address: Views/MainScreen
+  - ViewName: Popup_SignIn
+    Address: Views/Popup_SignIn
+  - ViewName: Popup_SignUp
+    Address: Views/Popup_SignUp
   - ViewName: SettingsScreen
     Address: Views/SettingsScreen
   - ViewName: ShopScreen

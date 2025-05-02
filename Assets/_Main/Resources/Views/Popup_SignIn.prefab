@@ -2196,6 +2196,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4562821286449732902}
   - component: {fileID: 7851942263001153218}
+  - component: {fileID: 638994517132138460}
+  - component: {fileID: 600200080384884272}
+  - component: {fileID: 8103904317825665135}
   m_Layer: 0
   m_Name: Popup_SignIn
   m_TagString: Untagged
@@ -2238,6 +2241,68 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   otherPanels:
   - {fileID: 0}
+--- !u!95 &638994517132138460
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5527069377419551612}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &600200080384884272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5527069377419551612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afd02512e2ff94b29b05094fa527c09f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _subViews: []
+  parentView: {fileID: 0}
+  _history: []
+  content: {fileID: 0}
+  isInit: 0
+  canvasGroup: {fileID: 0}
+  usernameInput: {fileID: 0}
+  passwordInput: {fileID: 0}
+  signInButton: {fileID: 0}
+  closeButton: {fileID: 0}
+  forgotPasswordButton: {fileID: 0}
+  signUpButton: {fileID: 0}
+  rememberMeToggle: {fileID: 0}
+  errorText: {fileID: 0}
+  fadeDuration: 0.5
+  errorDisplayDuration: 3
+--- !u!225 &8103904317825665135
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5527069377419551612}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5882044040483716257
 GameObject:
   m_ObjectHideFlags: 0

@@ -152,6 +152,30 @@ public class FirebaseAuthManager : MonoBehaviour
         }
     }
 
+    public async Task RegisterUser(string email, string password, string username)
+    {
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            Debug.LogError("Email and password must not be empty!");
+            return;
+        }
+
+        try
+        {
+            var result = await auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            Debug.Log($"Registration successful: {result.User.Email}");
+            // Automatically send verification email
+            await result.User.SendEmailVerificationAsync();
+            Debug.Log("Verification email sent!");
+        }
+        catch (FirebaseException ex)
+        {
+            string errorMessage = GetFirebaseErrorMessage(ex);
+            Debug.LogError($"Registration error: {errorMessage}");
+            throw new Exception(errorMessage);
+        }
+    }
+
     [TabGroup("Actions")]
     [Button("Sign In", ButtonSizes.Large)]
     public async Task SignIn()
@@ -262,6 +286,11 @@ public class FirebaseAuthManager : MonoBehaviour
         {
             Debug.LogError($"Unknown error during Google sign in: {ex.Message}");
         }
+    }
+
+    public async Task SignInWithGooglePublic()
+    {
+        await SignInWithGoogle();
     }
 
     /// <summary>
