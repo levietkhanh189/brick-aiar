@@ -12,7 +12,7 @@ This document summarizes the current status and progress of the Brick AIAR Unity
 
 ## Under Development
 - AI-assisted feedback and guidance system.
-- User interface enhancements including loading screens.
+- User interface enhancements including loading screens and sign-up UI.
 - Performance optimization for mobile AR platforms.
 - Cross-platform testing and bug fixing.
 - Further UI flow refinements and authentication error handling.

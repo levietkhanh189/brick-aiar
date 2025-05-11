@@ -16,6 +16,8 @@ This document tracks the current focus and recent updates in the Brick AIAR Unit
 - Created IntroScreenController.cs to manage IntroScreen UI and login interactions.
 - Integrated FirebaseAuthManager with IntroScreenController for Google and email sign-in.
 - Connected Popup_SignIn UI with IntroScreenController for email login flow.
+- Added LoadingScreen.cs for animated loading UI with progress bar and messages.
+- Developed Popup_SignUp.cs for user registration with Firebase authentication integration.
 
 ## Next Steps
 - Complete AI-assisted feedback system for LEGO building.

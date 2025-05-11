@@ -771,8 +771,6 @@ MonoBehaviour:
   canvasGroup: {fileID: 0}
   buttonLoginWithEmail: {fileID: 0}
   buttonLoginWithGoogle: {fileID: 0}
-  buttonLoginWithEmailText: {fileID: 0}
-  buttonLoginWithGoogleText: {fileID: 0}
   fadeDuration: 0.5
 --- !u!1 &6576888158128074291
 GameObject:
