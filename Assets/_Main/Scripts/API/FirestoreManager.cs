@@ -12,6 +12,7 @@ public class FirestoreManager : MonoBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         InitializeFirestore();
     }
 

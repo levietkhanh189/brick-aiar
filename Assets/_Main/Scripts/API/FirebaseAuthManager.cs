@@ -7,6 +7,8 @@ using Firebase;
 
 public class FirebaseAuthManager : MonoBehaviour
 {
+    public static FirebaseAuthManager Instance { get; private set; }
+    
     [TabGroup("Login Info")]
     [SerializeField] 
     private string email;
@@ -39,6 +41,12 @@ public class FirebaseAuthManager : MonoBehaviour
     [ReadOnly, ShowInInspector]
     private bool isEmailVerified;
 
+    // Public properties to access user info
+    public string UserId => userId;
+    public string UserEmail => userEmail;
+    public string DisplayName => displayName;
+    public bool IsEmailVerified => isEmailVerified;
+
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
 
@@ -48,6 +56,7 @@ public class FirebaseAuthManager : MonoBehaviour
 
     private async void Start()
     {
+        DontDestroyOnLoad(gameObject);
         await InitializeFirebase();
     }
 
@@ -104,7 +113,7 @@ public class FirebaseAuthManager : MonoBehaviour
     /// <summary>
     /// Updates user information fields from the current user.
     /// </summary>
-    private void UpdateUserInfo()
+    public void UpdateUserInfo()
     {
         if (currentUser != null)
         {
@@ -319,5 +328,11 @@ public class FirebaseAuthManager : MonoBehaviour
             auth.StateChanged -= AuthStateChanged;
             auth = null;
         }
+    }
+
+    public void SetLoginInfo(string email, string password)
+    {
+        this.email = email;
+        this.password = password;
     }
 }

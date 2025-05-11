@@ -698,6 +698,7 @@ GameObject:
   - component: {fileID: 6949897459280904253}
   - component: {fileID: 3319759875024341637}
   - component: {fileID: 6269207939342896825}
+  - component: {fileID: 1766017423870577929}
   m_Layer: 0
   m_Name: IntroScreen
   m_TagString: Untagged
@@ -768,10 +769,22 @@ MonoBehaviour:
   _history: []
   content: {fileID: 0}
   isInit: 0
-  canvasGroup: {fileID: 0}
-  buttonLoginWithEmail: {fileID: 0}
-  buttonLoginWithGoogle: {fileID: 0}
+  canvasGroup: {fileID: 1766017423870577929}
+  buttonLoginWithEmail: {fileID: 4023428699239635762}
+  buttonLoginWithGoogle: {fileID: 8875553120551262638}
   fadeDuration: 0.5
+--- !u!225 &1766017423870577929
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5976935982563339719}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6576888158128074291
 GameObject:
   m_ObjectHideFlags: 0
@@ -837,7 +850,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Go with Guest
+  m_text: Login with Email
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e0962d31f1f084fa3ba7147d76f5b6e8, type: 2}
   m_sharedMaterial: {fileID: 1653631458307283989, guid: e0962d31f1f084fa3ba7147d76f5b6e8,
@@ -975,9 +988,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 00f060c3dbcb3428faad0299d78a0189, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 76169e24606494834938daea79498f37, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

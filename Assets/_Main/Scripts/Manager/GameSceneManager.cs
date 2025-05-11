@@ -8,7 +8,6 @@ public class GameSceneManager : MonoBehaviour
     public static GameSceneManager Instance { get; private set; }
 
     [Header("Scene Settings")]
-    [SerializeField] private string loadingSceneName = "LoadingScene";
     [SerializeField] private float minimumLoadingTime = 1f;
 
     private string currentSceneName;
@@ -42,13 +41,6 @@ public class GameSceneManager : MonoBehaviour
     private IEnumerator LoadSceneAsync(string sceneName, Action onComplete)
     {
         isLoading = true;
-
-        // Load loading scene first
-        AsyncOperation loadingSceneOperation = SceneManager.LoadSceneAsync(loadingSceneName);
-        while (!loadingSceneOperation.isDone)
-        {
-            yield return null;
-        }
 
         // Load target scene
         AsyncOperation sceneOperation = SceneManager.LoadSceneAsync(sceneName);
@@ -85,11 +77,5 @@ public class GameSceneManager : MonoBehaviour
     public bool IsLoading()
     {
         return isLoading;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

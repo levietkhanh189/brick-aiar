@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using System;
 using System.Threading.Tasks;
 
 namespace UI
@@ -32,16 +33,14 @@ namespace UI
         [SerializeField] private float fadeDuration = 0.5f;
         [FoldoutGroup("Config")]
         [SerializeField] private float errorDisplayDuration = 3f;
-        private LoadingScreen loadingScreen;
         private FirebaseAuthManager authManager;
-        private Popup_SignIn popupSignIn;
+        private DataController dataController;
         private bool isPasswordVisible = false;
 
         public override void Init()
         {
             authManager = FindObjectOfType<FirebaseAuthManager>();
-            loadingScreen = DTNWindow.FindTopWindow().GetView<LoadingScreen>();
-            popupSignIn = DTNWindow.FindTopWindow().GetView<Popup_SignIn>();
+            dataController = FindObjectOfType<DataController>();
 
             if (authManager == null)
             {
@@ -49,9 +48,9 @@ namespace UI
                 return;
             }
 
-            if (popupSignIn == null)
+            if (dataController == null)
             {
-                Debug.LogError("Popup_SignIn was not found in the scene!");
+                Debug.LogError("DataController was not found in the scene!");
                 return;
             }
 
@@ -95,22 +94,56 @@ namespace UI
         private async void OnSignUpClicked()
         {
             if (!ValidateInputs()) return;
+            var loadingScreen = DTNWindow.FindTopWindow().ShowSubView<LoadingScreen>();
+            loadingScreen.InitIfNeed();
             loadingScreen.Show();
             loadingScreen.SetProgress(0.3f);
 
             try
             {
                 await authManager.RegisterUser(emailInput.text, passwordInput.text, usernameInput.text);
-                loadingScreen.SetProgress(1f);
-                ShowError("Registration successful! Please check your email to verify your account.");
+                
+                // Create user in Firestore
+                await CreateUserInFirestore(usernameInput.text, emailInput.text);
+
+                OnBackToSignInClicked();
+
+                DTNWindow.FindTopWindow().ShowSubView<Popup_CheckMail>();
             }
             catch (System.Exception ex)
             {
                 ShowError(ex.Message);
             }
-            finally
+        }
+
+        private async Task CreateUserInFirestore(string username, string email)
+        {
+            try
             {
-                loadingScreen.Hide();
+                // Create a new User object
+                FirestoreManager.User user = new FirestoreManager.User
+                {
+                    uid = authManager.UserId,
+                    userName = username,
+                    email = email,
+                    createdAt = Firebase.Firestore.Timestamp.FromDateTime(DateTime.UtcNow),
+                    role = "user",
+                    modelCount = 0,
+                    isVerified = authManager.IsEmailVerified
+                };
+
+                // Save user to Firestore
+                await dataController.CreateOrUpdateUserAsync(user);
+                
+                // Store user info in UserInfo singleton
+                UserInfo.Instance.SetUserData(user);
+                
+                Debug.Log($"User created in Firestore: {username} ({authManager.UserId})");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to create user in Firestore: {ex.Message}");
+                throw;
             }
         }
 
@@ -127,6 +160,8 @@ namespace UI
         private void OnBackToSignInClicked()
         {
             Hide();
+            var popupSignIn = DTNWindow.FindTopWindow().ShowSubView<Popup_SignIn>();
+            popupSignIn.InitIfNeed();
             popupSignIn.Show();
         }
 

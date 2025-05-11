@@ -31,7 +31,7 @@ public class DTNInitView : MonoBehaviour
     public DTNView Init(System.Type type, Transform parent = null)
     {
 
-        return Init(type.FullName, parent);
+        return Init(type.Name, parent);
     }
 
     public DTNView Init(string nameView, Transform parent = null)

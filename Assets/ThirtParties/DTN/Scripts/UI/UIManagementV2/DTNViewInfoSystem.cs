@@ -36,7 +36,7 @@ public class DTNViewInfoSystem : ScriptableObject
         {
             CreateHashTable();
         }
-
+        Debug.Log("DTNViewInfo = " + viewName);
         DTNViewInfo info = (DTNViewInfo)ViewInfoTable[viewName];
 
         return info.Address;

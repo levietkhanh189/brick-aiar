@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id">
-  <string name="gcm_defaultSenderId" translatable="false">280443647166</string>
-  <string name="google_storage_bucket" translatable="false">brick-ai-ar.firebasestorage.app</string>
-  <string name="project_id" translatable="false">brick-ai-ar</string>
-  <string name="google_api_key" translatable="false">AIzaSyBoNFenecF8zJmqMJIvlW5Exque1FHwPAI</string>
-  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBoNFenecF8zJmqMJIvlW5Exque1FHwPAI</string>
-  <string name="google_app_id" translatable="false">1:280443647166:android:45a172b218369b1ba99aef</string>
-  <string name="default_web_client_id" translatable="false">280443647166-siub3kl2obk7m3krvgm6bfo4s9um726j.apps.googleusercontent.com</string>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id">
+  <string name="gcm_defaultSenderId" translatable="false">226437058283</string>
+  <string name="google_storage_bucket" translatable="false">brick-aiar.firebasestorage.app</string>
+  <string name="project_id" translatable="false">brick-aiar</string>
+  <string name="google_api_key" translatable="false">AIzaSyCetGQ4SF9xGi66Zi3VKLedV8Q1C8MS4BA</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCetGQ4SF9xGi66Zi3VKLedV8Q1C8MS4BA</string>
+  <string name="google_app_id" translatable="false">1:226437058283:android:2129e415b4f8ff29fbf8ae</string>
 </resources>

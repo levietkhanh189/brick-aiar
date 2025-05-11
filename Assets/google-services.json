@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "280443647166",
-    "project_id": "brick-ai-ar",
-    "storage_bucket": "brick-ai-ar.firebasestorage.app"
+    "project_number": "226437058283",
+    "project_id": "brick-aiar",
+    "storage_bucket": "brick-aiar.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:280443647166:android:45a172b218369b1ba99aef",
+        "mobilesdk_app_id": "1:226437058283:android:2129e415b4f8ff29fbf8ae",
         "android_client_info": {
-          "package_name": "com.brick.ai.ar"
+          "package_name": "com.playard.brick.ai.ar"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "280443647166-siub3kl2obk7m3krvgm6bfo4s9um726j.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBoNFenecF8zJmqMJIvlW5Exque1FHwPAI"
+          "current_key": "AIzaSyCetGQ4SF9xGi66Zi3VKLedV8Q1C8MS4BA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "280443647166-siub3kl2obk7m3krvgm6bfo4s9um726j.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

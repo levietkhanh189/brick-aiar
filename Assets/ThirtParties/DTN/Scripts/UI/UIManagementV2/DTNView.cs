@@ -42,7 +42,10 @@ public abstract class DTNView : DTNMono
     {
         if(animator != null)
             animator.Play("Hide");
-        DTNPoolingGameManager.Instance.DestroyObject(this.gameObject,0.33f);
+        if(this.enabled)
+            DTNPoolingGameManager.Instance.DestroyObject(this.gameObject,0.33f);
+        else
+            DTNPoolingGameManager.Instance.DestroyObject(this.gameObject);
     }
 
     public virtual void Show()
@@ -124,11 +127,6 @@ public abstract class DTNView : DTNMono
             return null;
 
         return _history[_history.Count - 1];
-    }
-
-    public virtual T GetView<T>() where T : class
-    {
-        return DTNInitView._instance.Init<T>(content) as T;
     }
 
     public virtual DTNView Push(DTNView view)

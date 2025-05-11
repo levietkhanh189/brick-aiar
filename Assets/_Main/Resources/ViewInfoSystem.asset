@@ -25,6 +25,8 @@ MonoBehaviour:
     Address: Views/LoadingScreen
   - ViewName: MainScreen
     Address: Views/MainScreen
+  - ViewName: Popup_CheckMail
+    Address: Views/Popup_CheckMail
   - ViewName: Popup_SignIn
     Address: Views/Popup_SignIn
   - ViewName: Popup_SignUp

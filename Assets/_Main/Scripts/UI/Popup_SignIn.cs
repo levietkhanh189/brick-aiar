@@ -33,25 +33,17 @@ namespace UI
         [FoldoutGroup("Config")]
         [SerializeField] private float errorDisplayDuration = 3f;
 
-        private LoadingScreen loadingScreen;
         private FirebaseAuthManager authManager;
-        private Popup_SignUp popupSignUp;
+        private DataController dataController;
 
         public override void Init()
         {
             authManager = FindObjectOfType<FirebaseAuthManager>();
-            loadingScreen = DTNWindow.FindTopWindow().GetView<LoadingScreen>();
-            popupSignUp = DTNWindow.FindTopWindow().GetView<Popup_SignUp>();
+            dataController = FindObjectOfType<DataController>();
 
             if (authManager == null)
             {
                 Debug.LogError("FirebaseAuthManager was not found in the scene!");
-                return;
-            }
-
-            if (popupSignUp == null)
-            {
-                Debug.LogError("Popup_SignUp was not found in the scene!");
                 return;
             }
 
@@ -91,14 +83,34 @@ namespace UI
 
         private async void OnSignInClicked()
         {
+            Debug.Log("OnSignInClicked");
             if (!ValidateInputs()) return;
+            var loadingScreen = DTNWindow.FindTopWindow().ShowSubView<LoadingScreen>();
+            loadingScreen.InitIfNeed();
             loadingScreen.Show();
             loadingScreen.SetProgress(0.3f);
 
             try
             {
                 await authManager.SignIn();
+                authManager.UpdateUserInfo();
+                FirestoreManager.User user = await dataController.LoadUserAsync(authManager.UserId);
+                UserInfo.Instance.SetUserData(user);
                 loadingScreen.SetProgress(1f);
+                if (rememberMeToggle != null && rememberMeToggle.isOn)
+                {
+                    PlayerPrefs.SetString("AutoLogin_Email", usernameInput.text);
+                    PlayerPrefs.SetString("AutoLogin_Password", passwordInput.text);
+                    PlayerPrefs.SetInt("AutoLogin_Enabled", 1);
+                    PlayerPrefs.Save();
+                }
+                else
+                {
+                    PlayerPrefs.DeleteKey("AutoLogin_Email");
+                    PlayerPrefs.DeleteKey("AutoLogin_Password");
+                    PlayerPrefs.SetInt("AutoLogin_Enabled", 0);
+                    PlayerPrefs.Save();
+                }
                 Hide();
             }
             catch (System.Exception ex)
@@ -108,6 +120,7 @@ namespace UI
             finally
             {
                 loadingScreen.Hide();
+                GameSceneManager.Instance.LoadScene("MainScene");
             }
         }
 
@@ -123,7 +136,8 @@ namespace UI
                 ShowError("Please enter your username or email to reset your password.");
                 return;
             }
-
+            var loadingScreen = DTNWindow.FindTopWindow().ShowSubView<LoadingScreen>();
+            loadingScreen.InitIfNeed();
             loadingScreen.Show();
             loadingScreen.SetProgress(0.3f);
 
@@ -146,6 +160,8 @@ namespace UI
         private void OnSignUpButtonClicked()
         {
             Hide();
+            var popupSignUp = DTNWindow.FindTopWindow().ShowSubView<Popup_SignUp>();
+            popupSignUp.InitIfNeed();
             popupSignUp.Show();
         }
 
