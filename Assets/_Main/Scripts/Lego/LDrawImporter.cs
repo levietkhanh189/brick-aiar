@@ -8,15 +8,6 @@ public class LDrawImporter : MonoBehaviour
     [SerializeField] private string ldrawFilePath = "Assets/_Main/Scripts/Lego/v7.ldr";
     [SerializeField] private Vector3 scaleFactor = new Vector3(0.05f, 0.05f, 0.05f); // Tỷ lệ chuyển đổi từ LDU sang Unity
     
-    // Dictionary lưu offset trọng tâm cho từng .dat (dựa trên LDraw)
-    private Dictionary<string, Vector3> prefabPivotOffsets = new Dictionary<string, Vector3>
-    {
-        { "3005", new Vector3(0, 0, 0) }, // Viên gạch 1x1
-        { "3004", new Vector3(0, 0, 0) }, // Viên gạch 1x2
-        { "3003", new Vector3(0, 0, 0) }, // Viên gạch 2x2
-        { "3010", new Vector3(0, 0, 0) }  // Viên gạch 1x4
-    };
-
     // Bảng ánh xạ màu LDraw
     private Dictionary<int, Color> ldrawColors = new Dictionary<int, Color>
     {
@@ -41,6 +32,7 @@ public class LDrawImporter : MonoBehaviour
     {
         ReloadModel();
     }
+
 
     private void ReloadModel()
     {
@@ -143,9 +135,6 @@ public class LDrawImporter : MonoBehaviour
         unityPosition.x *= scaleFactor.x;
         unityPosition.y *= scaleFactor.y;
         unityPosition.z *= scaleFactor.z;
-
-        // Áp dụng offset trọng tâm từ Dictionary (nếu có)
-        Vector3 pivotOffset = prefabPivotOffsets.ContainsKey(datFile) ? prefabPivotOffsets[datFile] : Vector3.zero;
         
         // Đặt vị trí cho instance
         instance.transform.localPosition = unityPosition;
@@ -155,7 +144,7 @@ public class LDrawImporter : MonoBehaviour
         instance.transform.localRotation = rotation;
         
         // Đặt màu sắc
-        if (ldrawColors.TryGetValue(colorCode, out Color color))
+       /* if (ldrawColors.TryGetValue(colorCode, out Color color))
         {
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             foreach (var renderer in renderers)
@@ -163,15 +152,15 @@ public class LDrawImporter : MonoBehaviour
                 if (renderer != null && renderer.material != null)
                 {
                     // Tạo instance vật liệu mới để không ảnh hưởng đến các đối tượng khác
-                    renderer.material = new Material(renderer.material);
-                    renderer.material.color = color;
+                    //renderer.material = new Material(renderer.material);
+                    //renderer.material.color = color;
                 }
             }
         }
         else
         {
             Debug.LogWarning($"Mã màu LDraw {colorCode} không được định nghĩa.");
-        }
+        }*/
     }
 
     private Vector3 ConvertLDrawToUnityPosition(Vector3 ldrawPos)
