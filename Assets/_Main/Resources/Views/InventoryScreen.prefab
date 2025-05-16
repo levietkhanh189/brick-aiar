@@ -140,7 +140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Lego Model 1
+  m_text: 'Gun
 
 '
   m_isRightToLeft: 0
@@ -797,7 +797,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Lego Model 1
+  m_text: 'Naruto
 
 '
   m_isRightToLeft: 0
@@ -2021,7 +2021,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Lego Model 1
+  m_text: 'Car
 
 '
   m_isRightToLeft: 0

@@ -7,24 +7,11 @@ public class LDrawImporter : MonoBehaviour
 {
     [SerializeField] private string ldrawFilePath = "Assets/_Main/Scripts/Lego/v7.ldr";
     [SerializeField] private Vector3 scaleFactor = new Vector3(0.05f, 0.05f, 0.05f); // Tỷ lệ chuyển đổi từ LDU sang Unity
-    
-    // Bảng ánh xạ màu LDraw
-    private Dictionary<int, Color> ldrawColors = new Dictionary<int, Color>
-    {
-        { 0, new Color(0.2f, 0.2f, 0.2f) }, // Đen
-        { 1, new Color(0, 0.5f, 0.9f) },    // Xanh dương
-        { 7, new Color(0.7f, 0.7f, 0.7f) }, // Xám
-        { 14, new Color(1, 0.9f, 0) },      // Vàng
-        { 15, new Color(1, 1, 1) },         // Trắng
-        { 4, new Color(0.7f, 0, 0) },       // Đỏ
-        { 2, new Color(0, 0.7f, 0) }        // Xanh lá
-    };
-
+    public List<Material> materials = new List<Material>();
     private GameObject currentModel;
 
     [SerializeField] private bool isDeleteOld = true;
     
-    // Thêm biến để kiểm soát hướng chuyển đổi Y
     [SerializeField] private bool invertYAxis = true;
 
     [Sirenix.OdinInspector.Button]
@@ -142,25 +129,15 @@ public class LDrawImporter : MonoBehaviour
         // Chuyển đổi ma trận biến đổi và thiết lập góc xoay
         Quaternion rotation = ConvertLDrawToUnityRotation(matrix);
         instance.transform.localRotation = rotation;
-        
-        // Đặt màu sắc
-       /* if (ldrawColors.TryGetValue(colorCode, out Color color))
+        Material material = materials.Find(m => m.name == "LegoColor_" + colorCode);
+        if (material != null)
         {
-            Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
-            foreach (var renderer in renderers)
-            {
-                if (renderer != null && renderer.material != null)
-                {
-                    // Tạo instance vật liệu mới để không ảnh hưởng đến các đối tượng khác
-                    //renderer.material = new Material(renderer.material);
-                    //renderer.material.color = color;
-                }
-            }
+            instance.GetComponent<LegoController>().Init(material);
         }
         else
         {
-            Debug.LogWarning($"Mã màu LDraw {colorCode} không được định nghĩa.");
-        }*/
+            Debug.LogWarning($"Mã màu LDraw {"LegoColor_" + colorCode} không được định nghĩa.");
+        }
     }
 
     private Vector3 ConvertLDrawToUnityPosition(Vector3 ldrawPos)
