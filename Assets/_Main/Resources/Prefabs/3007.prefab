@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5484909271099679527}
   - component: {fileID: 640345003807704635}
   - component: {fileID: 6591295625635643808}
-  - component: {fileID: 1790179607431361953}
   m_Layer: 0
   m_Name: Mesh (1)
   m_TagString: Untagged
@@ -87,26 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1790179607431361953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981667197332009245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24fb3eb29eeebd04d87475bbfb984a31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  createMultiMaterialMesh: 0
-  combineInactiveChildren: 0
-  deactivateCombinedChildren: 0
-  deactivateCombinedChildrenMeshRenderers: 0
-  generateUVMap: 0
-  destroyCombinedChildren: 0
-  folderPath: Prefabs/CombinedMeshes
-  meshFiltersToSkip: []
 --- !u!1 &3934576199083900919
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,7 +97,6 @@ GameObject:
   - component: {fileID: 1872032841980303884}
   - component: {fileID: 8036669926435685175}
   - component: {fileID: 83717224529141708}
-  - component: {fileID: 1519456398555890213}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -194,26 +172,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1519456398555890213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3934576199083900919}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24fb3eb29eeebd04d87475bbfb984a31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  createMultiMaterialMesh: 0
-  combineInactiveChildren: 0
-  deactivateCombinedChildren: 0
-  deactivateCombinedChildrenMeshRenderers: 0
-  generateUVMap: 0
-  destroyCombinedChildren: 0
-  folderPath: Prefabs/CombinedMeshes
-  meshFiltersToSkip: []
 --- !u!1 &4122738637502290835
 GameObject:
   m_ObjectHideFlags: 0

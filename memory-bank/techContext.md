@@ -3,7 +3,7 @@
 This document details the technologies, tools, and development setup used in the Brick AIAR Unity project.
 
 ## Technologies and Tools
-- Unity Engine version: [Specify Unity version used]
+- Unity Engine version: 6000.0.25f1
 - C# scripting with .NET Framework compatible with Unity version
 - Unity Universal Render Pipeline (URP) for rendering
 - AR Foundation and ARKit/ARCore for augmented reality support
@@ -16,7 +16,7 @@ This document details the technologies, tools, and development setup used in the
 - Development environment: Visual Studio / Rider / VSCode with Unity integration
 - Target platforms: iOS, Android, Windows, macOS
 - Version control: Git with .gitignore configured for Unity projects
-- Continuous integration: [Specify if applicable]
+- Continuous integration: None currently
 
 ## Technical Constraints
 - Performance optimization for mobile devices with limited resources
