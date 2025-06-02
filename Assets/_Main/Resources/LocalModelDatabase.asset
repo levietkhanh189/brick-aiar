@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: LocalModelDatabase
   m_EditorClassIdentifier: 
   models:
-  - ownerId: 
-    title: 
-    description: 
+  - ownerId: 1
+    title: Default
+    description: Default
     tags: []
     ldrUrl: /Users/timo/Library/Application Support/DefaultCompany/brick-aiar/LDRCache/model.ldr
     previewImageUrl: 
-    brickCount: 0
+    brickCount: 1
     isPublic: 0
     likes: 0
-    downloads: 0
+    downloads: 1
     createdAt: 0
     updatedAt: 0
