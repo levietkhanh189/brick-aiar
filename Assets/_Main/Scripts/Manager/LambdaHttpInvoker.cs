@@ -242,6 +242,7 @@ public class LambdaHttpInvoker : MonoBehaviour
         }
     }
 
+    [Sirenix.OdinInspector.Button]
     // Example usage methods - can be called from UI buttons
     public async void OnSampleButtonClick()
     {
