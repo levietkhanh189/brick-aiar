@@ -48,7 +48,7 @@ public class PointListDrawer
 	) {
 		worldPosition = rectTransform.TransformPoint(position);
 
-		var fmh_54_5_638780048800344380 = Quaternion.identity; draggedPosition = rectTransform.InverseTransformPoint(
+		var fmh_54_5_638846888348399500 = Quaternion.identity; draggedPosition = rectTransform.InverseTransformPoint(
 			Handles.FreeMoveHandle(
 				worldPosition,
 				HandleUtility.GetHandleSize(worldPosition) * 0.1f,
