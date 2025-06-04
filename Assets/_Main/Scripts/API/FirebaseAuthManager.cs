@@ -54,9 +54,21 @@ public class FirebaseAuthManager : MonoBehaviour
     [ShowInInspector, ReadOnly]
     public bool IsSignedIn => currentUser != null;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private async void Start()
     {
-        DontDestroyOnLoad(gameObject);
         await InitializeFirebase();
     }
 
