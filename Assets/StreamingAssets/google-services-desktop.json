@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "226437058283",
+    "firebase_url": "https://brick-aiar-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "brick-aiar",
     "storage_bucket": "brick-aiar.firebasestorage.app"
   },

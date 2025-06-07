@@ -11,7 +11,6 @@ namespace API
         
         private GenImageAPI genImageAPI;
         private GenLegoAPI genLegoAPI;
-        private RealtimeDatabaseListener realtimeListener;
         
         // Callback dictionary để lưu trữ callbacks cho các request async
         private Dictionary<string, Action<LegoModelData, string>> legoCallbacks = new Dictionary<string, Action<LegoModelData, string>>();
@@ -35,10 +34,6 @@ namespace API
         {
             genImageAPI = new GenImageAPI();
             genLegoAPI = new GenLegoAPI();
-            
-            // Khởi tạo RealtimeDatabaseListener
-            realtimeListener = gameObject.AddComponent<RealtimeDatabaseListener>();
-            realtimeListener.OnModelCompleted += OnLegoModelCompleted;
         }
 
         /// <summary>
@@ -64,12 +59,6 @@ namespace API
 
                 if (response != null && !string.IsNullOrEmpty(response.requestId))
                 {
-                    // Lưu callback để gọi khi có kết quả từ Firebase
-                    legoCallbacks[response.requestId] = onComplete;
-                    
-                    // Bắt đầu listen cho request này
-                    realtimeListener.StartListeningForRequest(response.requestId);
-                    
                     Debug.Log($"Đã gửi request LEGO thành công. Request ID: {response.requestId}");
                     Debug.Log("Đang chờ xử lý từ AWS...");
                 }
@@ -81,18 +70,6 @@ namespace API
         }
 
         /// <summary>
-        /// Xử lý khi nhận được kết quả LEGO từ Firebase
-        /// </summary>
-        private void OnLegoModelCompleted(string requestId, LegoModelData modelData, string error)
-        {
-            if (legoCallbacks.TryGetValue(requestId, out Action<LegoModelData, string> callback))
-            {
-                callback?.Invoke(modelData, error);
-                legoCallbacks.Remove(requestId); // Cleanup
-            }
-        }
-
-        /// <summary>
         /// Hủy listen cho một request cụ thể
         /// </summary>
         public void CancelLegoRequest(string requestId)
@@ -100,16 +77,11 @@ namespace API
             if (legoCallbacks.ContainsKey(requestId))
             {
                 legoCallbacks.Remove(requestId);
-                realtimeListener.StopListeningForRequest(requestId);
             }
         }
 
         private void OnDestroy()
         {
-            if (realtimeListener != null)
-            {
-                realtimeListener.OnModelCompleted -= OnLegoModelCompleted;
-            }
             legoCallbacks.Clear();
         }
     }
