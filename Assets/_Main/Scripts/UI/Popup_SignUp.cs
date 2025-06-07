@@ -10,28 +10,17 @@ namespace UI
 {
     public class Popup_SignUp : DTNView
     {
-        [FoldoutGroup("References")]
         [SerializeField] private CanvasGroup canvasGroup;
-        [FoldoutGroup("References")]
         [SerializeField] private TMP_InputField emailInput;
-        [FoldoutGroup("References")]
         [SerializeField] private TMP_InputField usernameInput;
-        [FoldoutGroup("References")]
         [SerializeField] private TMP_InputField passwordInput;
-        [FoldoutGroup("References")]
         [SerializeField] private Button signUpButton;
-        [FoldoutGroup("References")]
         [SerializeField] private Button closeButton;
-        [FoldoutGroup("References")]
         [SerializeField] private Button showPasswordButton;
-        [FoldoutGroup("References")]
         [SerializeField] private Button backToSignInButton;
-        [FoldoutGroup("References")]
         [SerializeField] private TextMeshProUGUI errorText;
 
-        [FoldoutGroup("Config")]
         [SerializeField] private float fadeDuration = 0.5f;
-        [FoldoutGroup("Config")]
         [SerializeField] private float errorDisplayDuration = 3f;
         private FirebaseAuthManager authManager;
         private DataController dataController;
@@ -99,52 +88,34 @@ namespace UI
             loadingScreen.Show();
             loadingScreen.SetProgress(0.3f);
 
-            try
-            {
-                await authManager.RegisterUser(emailInput.text, passwordInput.text, usernameInput.text);
-                
-                // Create user in Firestore
-                await CreateUserInFirestore(usernameInput.text, emailInput.text);
+            await authManager.RegisterUser(emailInput.text, passwordInput.text, usernameInput.text);
 
-                OnBackToSignInClicked();
+            // Create user in Firestore
+            await CreateUserInFirestore(usernameInput.text, emailInput.text);
 
-                DTNWindow.FindTopWindow().ShowSubView<Popup_CheckMail>();
-            }
-            catch (System.Exception ex)
-            {
-                ShowError(ex.Message);
-            }
+            OnBackToSignInClicked();
+
+            DTNWindow.FindTopWindow().ShowSubView<Popup_CheckMail>();
         }
 
         private async Task CreateUserInFirestore(string username, string email)
         {
-            try
+            // Create a new User object
+            FirestoreManager.User user = new FirestoreManager.User
             {
-                // Create a new User object
-                FirestoreManager.User user = new FirestoreManager.User
-                {
-                    uid = authManager.UserId,
-                    userName = username,
-                    email = email,
-                    createdAt = Firebase.Firestore.Timestamp.FromDateTime(DateTime.UtcNow),
-                    role = "user",
-                    modelCount = 0,
-                    isVerified = authManager.IsEmailVerified
-                };
+                uid = authManager.GetCurrentUserId(),
+                userName = username,
+                email = email,
+                createdAt = Firebase.Firestore.Timestamp.FromDateTime(DateTime.UtcNow),
+                role = "user",
+                modelCount = 0,
+                isVerified = authManager.GetCurrentUserVerified()
+            };
 
-                // Save user to Firestore
-                await dataController.CreateOrUpdateUserAsync(user);
-                
-                // Store user info in UserInfo singleton
-                UserInfo.Instance.SetUserData(user);
-                
-                Debug.Log($"User created in Firestore: {username} ({authManager.UserId})");
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Failed to create user in Firestore: {ex.Message}");
-                throw;
-            }
+            // Save user to Firestore
+            await dataController.CreateOrUpdateUserAsync(user);
+
+            Debug.Log($"User created in Firestore: {username} ({user.uid})");
         }
 
         private void OnCloseClicked()

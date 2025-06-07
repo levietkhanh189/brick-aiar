@@ -6,19 +6,20 @@ using Sirenix.OdinInspector;
 
 namespace UI
 {
-    public class Popup_AICraftOption : DTNView
+    public class Popup_AIImageToLego : DTNView
     {
         [SerializeField] private CanvasGroup canvasGroup;
 
         [SerializeField] private Button buttonClose;
-        [SerializeField] private Button buttonImageToLego;
-        [SerializeField] private Button buttonTextToLego;
-
+        [SerializeField] private Button buttonLoadImage;
+        [SerializeField] private Button buttonCraftLego;
+        [SerializeField] private Slider details;
+        [SerializeField] private Slider foregroundRatio;
         [SerializeField] private float fadeDuration = 0.5f;
-
+        [SerializeField] private Texture2D texture;
+        [SerializeField] private RawImage image;
         public override void Init()
         {
-            // someManager = FindObjectOfType<SomeManager>();
             SetupButtons();
         }
 
@@ -26,10 +27,10 @@ namespace UI
         {
             if (buttonClose != null)
                 buttonClose.onClick.AddListener(OnCloseClicked);
-            if (buttonImageToLego != null)
-                buttonImageToLego.onClick.AddListener(OnImageToLegoClicked);
-            if (buttonTextToLego != null)
-                buttonTextToLego.onClick.AddListener(OnTextToLegoClicked);
+            if (buttonLoadImage != null)
+                buttonLoadImage.onClick.AddListener(OnLoadImageClicked);
+            if (buttonCraftLego != null)
+                buttonCraftLego.onClick.AddListener(OnCraftLegoClicked);
         }
 
         public override void Show()
@@ -60,21 +61,16 @@ namespace UI
             Hide();
         }
 
-        private void OnImageToLegoClicked()
+        private void OnLoadImageClicked()
         {
             Debug.Log("Image To Lego button clicked");
-            var popup_AICraft = DTNWindow.FindTopWindow().ShowSubView<Popup_AIImageToLego>();
-            popup_AICraft.InitIfNeed();
-            popup_AICraft.Show();
-            Hide();
+            image.texture = texture;
         }
 
-        private void OnTextToLegoClicked()
+        private void OnCraftLegoClicked()
         {
             Debug.Log("Text To Lego button clicked");
-            var popup_AICraft = DTNWindow.FindTopWindow().ShowSubView<Popup_AITextToLego>();
-            popup_AICraft.InitIfNeed();
-            popup_AICraft.Show();
+            AIFlowController.Instance.CraftImageToLego(TextureToBase64.ConvertToBase64(texture), details.value, foregroundRatio.value);
             Hide();
         }
 
@@ -83,10 +79,10 @@ namespace UI
             base.OnDestroy();
             if (buttonClose != null)
                 buttonClose.onClick.RemoveListener(OnCloseClicked);
-            if (buttonImageToLego != null)
-                buttonImageToLego.onClick.RemoveListener(OnImageToLegoClicked);
-            if (buttonTextToLego != null)
-                buttonTextToLego.onClick.RemoveListener(OnTextToLegoClicked);
+            if (buttonLoadImage != null)
+                buttonLoadImage.onClick.RemoveListener(OnLoadImageClicked);
+            if (buttonCraftLego != null)
+                buttonCraftLego.onClick.RemoveListener(OnCraftLegoClicked);
         }
     }
 }

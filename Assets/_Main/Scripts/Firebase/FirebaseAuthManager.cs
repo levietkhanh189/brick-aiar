@@ -8,53 +8,17 @@ using Firebase;
 public class FirebaseAuthManager : MonoBehaviour
 {
     public static FirebaseAuthManager Instance { get; private set; }
-    
-    [TabGroup("Login Info")]
-    [SerializeField] 
-    private string email;
-    
-    [TabGroup("Login Info")]
-    [SerializeField] 
-    private string password;
 
-    [TabGroup("Login Info")]
-    [SerializeField]
     private string googleIdToken;
 
-    [TabGroup("Login Info")]
-    [SerializeField]
     private string googleAccessToken;
-
-    [FoldoutGroup("User Info", expanded: false)]
-    [ReadOnly, ShowInInspector]
-    private string userId;
-
-    [FoldoutGroup("User Info")]
-    [ReadOnly, ShowInInspector]
-    private string displayName;
-
-    [FoldoutGroup("User Info")]
-    [ReadOnly, ShowInInspector]
-    private string userEmail;
-
-    [FoldoutGroup("User Info")]
-    [ReadOnly, ShowInInspector]
-    private bool isEmailVerified;
-
-    // Public properties to access user info
-    public string UserId => userId;
-    public string UserEmail => userEmail;
-    public string DisplayName => displayName;
-    public bool IsEmailVerified => isEmailVerified;
 
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
 
-    [BoxGroup("Status")]
-    [ShowInInspector, ReadOnly]
     public bool IsSignedIn => currentUser != null;
 
-    private void Awake()
+    private async void Awake()
     {
         if (Instance == null)
         {
@@ -65,10 +29,6 @@ public class FirebaseAuthManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    private async void Start()
-    {
         await InitializeFirebase();
     }
 
@@ -77,32 +37,25 @@ public class FirebaseAuthManager : MonoBehaviour
     /// </summary>
     private async Task InitializeFirebase()
     {
-        try
+        // Wait for Firebase to initialize
+        var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
+        if (dependencyStatus == DependencyStatus.Available)
         {
-            // Wait for Firebase to initialize
-            var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
-            if (dependencyStatus == DependencyStatus.Available)
-            {
-                auth = FirebaseAuth.DefaultInstance;
-                auth.StateChanged += AuthStateChanged;
-                AuthStateChanged(this, null);
-                Debug.Log("Firebase Authentication is ready!");
-            }
-            else
-            {
-                Debug.LogError($"Could not initialize Firebase: {dependencyStatus}");
-            }
+            auth = FirebaseAuth.DefaultInstance;
+            auth.StateChanged += AuthStateChanged;
+            AuthStateChanged(this, null);
+            Debug.Log("Firebase Authentication is ready!");
         }
-        catch (Exception ex)
+        else
         {
-            Debug.LogError($"Firebase initialization error: {ex.Message}");
+            Debug.LogError($"Could not initialize Firebase: {dependencyStatus}");
         }
     }
 
     /// <summary>
     /// Handles authentication state changes.
     /// </summary>
-    private void AuthStateChanged(object sender, EventArgs eventArgs)
+    private async void AuthStateChanged(object sender, EventArgs eventArgs)
     {
         if (auth.CurrentUser != currentUser)
         {
@@ -110,67 +63,25 @@ public class FirebaseAuthManager : MonoBehaviour
             if (!signedIn && currentUser != null)
             {
                 Debug.Log($"Signed out: {currentUser.UserId}");
-                ClearUserInfo();
             }
 
             currentUser = auth.CurrentUser;
+
             if (signedIn)
             {
-                UpdateUserInfo();
                 Debug.Log($"Signed in: {currentUser.UserId}");
             }
         }
     }
 
-    /// <summary>
-    /// Updates user information fields from the current user.
-    /// </summary>
-    public void UpdateUserInfo()
+    public string GetCurrentUserId()
     {
-        if (currentUser != null)
-        {
-            userId = currentUser.UserId;
-            displayName = currentUser.DisplayName ?? "No display name";
-            userEmail = currentUser.Email;
-            isEmailVerified = currentUser.IsEmailVerified;
-        }
+        return currentUser.UserId;
     }
 
-    /// <summary>
-    /// Clears user information fields.
-    /// </summary>
-    private void ClearUserInfo()
+    public bool GetCurrentUserVerified()
     {
-        userId = string.Empty;
-        displayName = string.Empty;
-        userEmail = string.Empty;
-        isEmailVerified = false;
-    }
-
-    [TabGroup("Actions")]
-    [Button("Register", ButtonSizes.Large)]
-    public async Task RegisterUser()
-    {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-        {
-            Debug.LogError("Email and password must not be empty!");
-            return;
-        }
-
-        try
-        {
-            var result = await auth.CreateUserWithEmailAndPasswordAsync(email, password);
-            Debug.Log($"Registration successful: {result.User.Email}");
-            // Automatically send verification email
-            await result.User.SendEmailVerificationAsync();
-            Debug.Log("Verification email sent!");
-        }
-        catch (FirebaseException ex)
-        {
-            string errorMessage = GetFirebaseErrorMessage(ex);
-            Debug.LogError($"Registration error: {errorMessage}");
-            throw new Exception(errorMessage);
-        }
+        return currentUser.IsEmailVerified;
     }
 
     public async Task RegisterUser(string email, string password, string username)
@@ -181,48 +92,25 @@ public class FirebaseAuthManager : MonoBehaviour
             return;
         }
 
-        try
-        {
-            var result = await auth.CreateUserWithEmailAndPasswordAsync(email, password);
-            Debug.Log($"Registration successful: {result.User.Email}");
-            // Automatically send verification email
-            await result.User.SendEmailVerificationAsync();
-            Debug.Log("Verification email sent!");
-        }
-        catch (FirebaseException ex)
-        {
-            string errorMessage = GetFirebaseErrorMessage(ex);
-            Debug.LogError($"Registration error: {errorMessage}");
-            throw new Exception(errorMessage);
-        }
+        var result = await auth.CreateUserWithEmailAndPasswordAsync(email, password);
+        Debug.Log($"Registration successful: {result.User.Email}");
+        // Automatically send verification email
+        await result.User.SendEmailVerificationAsync();
+        Debug.Log("Verification email sent!");
     }
 
-    [TabGroup("Actions")]
-    [Button("Sign In", ButtonSizes.Large)]
-    public async Task SignIn()
+    public async Task SignIn(string email, string password)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
         {
             Debug.LogError("Email and password must not be empty!");
             return;
         }
-
-        try
-        {
-            var result = await auth.SignInWithEmailAndPasswordAsync(email, password);
-            Debug.Log($"Sign in successful: {result.User.Email}");
-        }
-        catch (FirebaseException ex)
-        {
-            string errorMessage = GetFirebaseErrorMessage(ex);
-            Debug.LogError($"Sign in error: {errorMessage}");
-            throw new Exception(errorMessage);
-        }
+        await auth.SignInWithEmailAndPasswordAsync(email, password);
+        //var result = await auth.SignInWithEmailAndPasswordAsync(email, password);
+       // Debug.Log($"Sign in successful: {result.User.Email}");
     }
 
-    [TabGroup("Actions")]
-    [Button("Sign Out", ButtonSizes.Large)]
-    [EnableIf("IsSignedIn")]
     private void SignOut()
     {
         if (auth != null)
@@ -232,23 +120,12 @@ public class FirebaseAuthManager : MonoBehaviour
         }
     }
 
-    [TabGroup("Actions")]
-    [Button("Resend Verification Email", ButtonSizes.Large)]
-    [EnableIf("IsSignedIn")]
     private async void SendVerificationEmail()
     {
         if (currentUser != null && !currentUser.IsEmailVerified)
         {
-            try
-            {
-                await currentUser.SendEmailVerificationAsync();
-                Debug.Log("Verification email resent");
-            }
-            catch (FirebaseException ex)
-            {
-                string errorMessage = GetFirebaseErrorMessage(ex);
-                Debug.LogError($"Verification email error: {errorMessage}");
-            }
+            await currentUser.SendEmailVerificationAsync();
+            Debug.Log("Verification email resent");
         }
         else
         {
@@ -256,23 +133,12 @@ public class FirebaseAuthManager : MonoBehaviour
         }
     }
 
-    [TabGroup("Actions")]
-    [Button("Reset Password", ButtonSizes.Large)]
-    public async Task ResetPassword()
+    public async Task ResetPassword(string email)
     {
         if (!string.IsNullOrEmpty(email))
         {
-            try
-            {
-                await auth.SendPasswordResetEmailAsync(email);
-                Debug.Log("Password reset email sent");
-            }
-            catch (FirebaseException ex)
-            {
-                string errorMessage = GetFirebaseErrorMessage(ex);
-                Debug.LogError($"Password reset email error: {errorMessage}");
-                throw new Exception(errorMessage);
-            }
+            await auth.SendPasswordResetEmailAsync(email);
+            Debug.Log("Password reset email sent");
         }
         else
         {
@@ -281,32 +147,18 @@ public class FirebaseAuthManager : MonoBehaviour
         }
     }
 
-    [TabGroup("Actions")]
-    [Button("Sign In with Google", ButtonSizes.Large)]
     private async Task SignInWithGoogle()
     {
-        try
+        if (string.IsNullOrEmpty(googleIdToken) || string.IsNullOrEmpty(googleAccessToken))
         {
-            if (string.IsNullOrEmpty(googleIdToken) || string.IsNullOrEmpty(googleAccessToken))
-            {
-                Debug.LogError("Google ID Token and Access Token must not be empty!");
-                return;
-            }
+            Debug.LogError("Google ID Token and Access Token must not be empty!");
+            return;
+        }
 
-            Credential credential = GoogleAuthProvider.GetCredential(googleIdToken, googleAccessToken);
-            var result = await auth.SignInAndRetrieveDataWithCredentialAsync(credential);
-            
-            Debug.Log($"Google sign in successful: {result.User.DisplayName} ({result.User.UserId})");
-        }
-        catch (FirebaseException ex)
-        {
-            string errorMessage = GetFirebaseErrorMessage(ex);
-            Debug.LogError($"Google sign in error: {errorMessage}");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Unknown error during Google sign in: {ex.Message}");
-        }
+        Credential credential = GoogleAuthProvider.GetCredential(googleIdToken, googleAccessToken);
+        var result = await auth.SignInAndRetrieveDataWithCredentialAsync(credential);
+
+        Debug.Log($"Google sign in successful: {result.User.DisplayName} ({result.User.UserId})");
     }
 
     public async Task SignInWithGooglePublic()
@@ -340,11 +192,5 @@ public class FirebaseAuthManager : MonoBehaviour
             auth.StateChanged -= AuthStateChanged;
             auth = null;
         }
-    }
-
-    public void SetLoginInfo(string email, string password)
-    {
-        this.email = email;
-        this.password = password;
     }
 }

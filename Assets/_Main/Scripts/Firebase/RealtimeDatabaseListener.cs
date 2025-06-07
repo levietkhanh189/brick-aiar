@@ -59,12 +59,10 @@ public class RealtimeDatabaseListener : MonoBehaviour
 
         try
         {
+            /// Checkkkk lai phan nay
+
             // Lấy user_id từ FirebaseAuthManager
-            string userId = "Right_test"; // Default fallback
-            if (FirebaseAuthManager.Instance != null && !string.IsNullOrEmpty(FirebaseAuthManager.Instance.UserId))
-            {
-                userId = FirebaseAuthManager.Instance.UserId;
-            }
+            string userId = FirebaseAuthManager.Instance.GetCurrentUserId();
 
             // Tạo path đến data trong Firebase: users/{user_id}/{request_id}
             string path = $"users/{userId}/{requestId}";

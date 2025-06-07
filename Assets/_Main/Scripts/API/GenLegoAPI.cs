@@ -17,7 +17,7 @@ namespace API
         public class Options
         {
             public bool authRequired;
-            public float details = 0.02f;
+            public float details = 0.05f;
             public float foregroundRatio = 0.85f;
         }
     }
@@ -52,7 +52,7 @@ namespace API
         public string name;
         public string polycount;
         public string price;
-        public string status; // "processing", "success", "failed"
+        public string status; // "processing", "success"
         public string thumbnail_url;
     }
 
@@ -60,15 +60,9 @@ namespace API
     {
         private const string apiUrl = "https://lvm3bok3icqnfhj2o7llcfxbbe0vwbxv.lambda-url.us-east-1.on.aws/";
 
-        public IEnumerator GenLegoCoroutine(string base64Image, Action<GenLegoResponseBody, string> callback, 
-            float details = 0.02f, float foregroundRatio = 0.85f)
+        public IEnumerator GenLegoCoroutine(string base64Image, Action<GenLegoResponseBody, string> callback, float details = 0.05f, float foregroundRatio = 0.85f)
         {
-            // Lấy user_id từ FirebaseAuthManager https://lvm3bok3icqnfhj2o7llcfxbbe0vwbxv.lambda-url.us-east-1.on.aws/
-            string userId = "Right_test"; // Default fallback
-            if (FirebaseAuthManager.Instance != null && !string.IsNullOrEmpty(FirebaseAuthManager.Instance.UserId))
-            {
-                userId = FirebaseAuthManager.Instance.UserId;
-            }
+            string userId = FirebaseAuthManager.Instance.GetCurrentUserId();
 
             var requestData = new GenLegoRequest
             {
@@ -95,11 +89,7 @@ namespace API
                 yield return www.SendWebRequest();
                 Debug.Log($"Response nhận được: {www.downloadHandler.text}");
 
-#if UNITY_2020_1_OR_NEWER
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
-#else
-                if (www.isNetworkError || www.isHttpError)
-#endif
                 {
                     string errorMsg = $"Lỗi kết nối: {www.error} - Response Code: {www.responseCode}";
                     Debug.LogError(errorMsg);
@@ -107,25 +97,16 @@ namespace API
                 }
                 else
                 {
-                    try
+                    Debug.Log($"Response nhận được: {www.downloadHandler.text}");
+                    var responseBody = JsonUtility.FromJson<GenLegoResponseBody>(www.downloadHandler.text);
+                    if (responseBody != null && !string.IsNullOrEmpty(responseBody.requestId))
                     {
-                        Debug.Log($"Response nhận được: {www.downloadHandler.text}");
-                        var responseBody = JsonUtility.FromJson<GenLegoResponseBody>(www.downloadHandler.text);
-                        if (responseBody != null && !string.IsNullOrEmpty(responseBody.requestId))
-                        {
-                            Debug.Log($"Gửi request LEGO thành công! Request ID: {responseBody.requestId}, Status: {responseBody.status}");
-                            callback(responseBody, null);
-                        }
-                        else
-                        {
-                            callback(null, "Response không hợp lệ hoặc thiếu requestId");
-                        }
+                        Debug.Log($"Gửi request LEGO thành công! Request ID: {responseBody.requestId}, Status: {responseBody.status}");
+                        callback(responseBody, null);
                     }
-                    catch (Exception e)
+                    else
                     {
-                        string errorMsg = $"Lỗi parse JSON: {e.Message}";
-                        Debug.LogError(errorMsg);
-                        callback(null, errorMsg);
+                        callback(null, "Response không hợp lệ hoặc thiếu requestId");
                     }
                 }
             }

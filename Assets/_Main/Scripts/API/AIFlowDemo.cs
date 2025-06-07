@@ -17,6 +17,10 @@ public class AIFlowDemo : MonoBehaviour
     public string imagePrompt = "a red sports car on a mountain road";
 
     [TabGroup("Input")]
+    [LabelText("Texture2D để tạo Lego")]
+    public Texture2D image;
+
+    [TabGroup("Input")]
     [TextArea(2, 4)]
     [LabelText("Base64 để tạo Lego")]
     public string imageBase = "a red sports car on a mountain road";
@@ -122,6 +126,21 @@ public class AIFlowDemo : MonoBehaviour
     }
 
     [TabGroup("Actions")]
+    [Button("🧱 Tạo LEGO từ Texture2D", ButtonSizes.Large)]
+    public void GenerateLegoFromTexture2D()
+    {
+        byte[] imageData = image.EncodeToPNG();
+        currentImageBase64 = Convert.ToBase64String(imageData);
+        if (string.IsNullOrEmpty(imageBase))
+        {
+            UpdateStatus("Cần có ảnh trước khi tạo LEGO!");
+            return;
+        }
+
+        StartCoroutine(GenerateLegoFlow());
+    }
+
+    [TabGroup("Actions")]
     [Button("📥 Tải File LDR", ButtonSizes.Medium)]
     [EnableIf("@currentLegoData != null && !string.IsNullOrEmpty(currentLegoData.model_url)")]
     public void DownloadLDRFile()
@@ -143,7 +162,7 @@ public class AIFlowDemo : MonoBehaviour
             return;
         }
 
-        StartCoroutine(DownloadS3LDRFlow());
+        DownloadS3LDRFlow();
     }
 
     [TabGroup("Actions")]
@@ -260,12 +279,12 @@ public class AIFlowDemo : MonoBehaviour
     /// <summary>
     /// Flow tải xuống file LDR từ S3 URL được nhập thủ công
     /// </summary>
-    private IEnumerator DownloadS3LDRFlow()
+    private void DownloadS3LDRFlow()
     {
         UpdateStatus("📥 Đang tải file LDR từ S3 URL...");
         LogMessage($"📥 Bắt đầu tải file LDR từ URL: {s3LdrUrl}");
-
-        yield return LDRDownloader.DownloadLDRFile(s3LdrUrl, (ldrContent, error) =>
+        string userId = FirebaseAuthManager.Instance.GetCurrentUserId();
+        LDRDownloader.DownloadLDRFileFromS3Path(userId, s3LdrUrl, (ldrContent, error) =>
         {
             if (error != null)
             {
@@ -300,6 +319,9 @@ public class AIFlowDemo : MonoBehaviour
             }
         });
     }
+
+
+
 
     /// <summary>
     /// Callback khi quá trình tạo LEGO hoàn thành (từ Firebase)

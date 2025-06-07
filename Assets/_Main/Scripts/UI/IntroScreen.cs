@@ -4,19 +4,16 @@ using TMPro;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace UI
 {
     public class IntroScreen : DTNView
     {
-        [FoldoutGroup("References")]
         [SerializeField] private CanvasGroup canvasGroup;
-        [FoldoutGroup("References")]
         [SerializeField] private Button buttonLoginWithEmail;
-        [FoldoutGroup("References")]
         [SerializeField] private Button buttonLoginWithGoogle;
 
-        [FoldoutGroup("Config")]
         [SerializeField] private float fadeDuration = 0.5f;
 
         private FirebaseAuthManager authManager;
@@ -53,41 +50,25 @@ namespace UI
                 string password = PlayerPrefs.GetString("AutoLogin_Password", "");
                 if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
                 {
-                    AutoLogin(email, password);
+                    StartCoroutine(AutoLogin(email, password));
                 }
             }
         }
 
-        private async void AutoLogin(string email, string password)
+        private IEnumerator AutoLogin(string email, string password)
         {
+            yield return null;
             var loadingScreen = DTNWindow.FindTopWindow().ShowSubView<LoadingScreen>();
             loadingScreen.InitIfNeed();
             loadingScreen.Show();
             loadingScreen.SetProgress(0.3f);
 
-            try
-            {
-                authManager.SetLoginInfo(email, password);
-                await authManager.SignIn();
-                authManager.UpdateUserInfo();
-                FirestoreManager.User user = null;
-                if (dataController != null)
-                {
-                    user = await dataController.LoadUserAsync(authManager.UserId);
-                    UserInfo.Instance.SetUserData(user);
-                }
-                loadingScreen.SetProgress(1f);
-                Hide();
-                GameSceneManager.Instance.LoadScene("MainScene");
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"Auto login failed: {ex.Message}");
-            }
-            finally
-            {
-                loadingScreen.Hide();
-            }
+            yield return authManager.SignIn(email, password);
+            yield return DataController.Instance.LoadUserAsync();
+
+            loadingScreen.SetProgress(1f);
+            Hide();
+            GameSceneManager.Instance.LoadScene("MainScene");
         }
 
         public override void Hide()
@@ -109,20 +90,9 @@ namespace UI
             loadingScreen.Show();
             loadingScreen.SetProgress(0.3f);
 
-            try
-            {
-                await authManager.SignInWithGooglePublic();
-                loadingScreen.SetProgress(1f);
-                Hide();
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"Login with Google failed: {ex.Message}");
-            }
-            finally
-            {
-                loadingScreen.Hide();
-            }
+            await authManager.SignInWithGooglePublic();
+            loadingScreen.SetProgress(1f);
+            Hide();
         }
 
         public override void OnDestroy()

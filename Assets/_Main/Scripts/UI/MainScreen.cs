@@ -9,40 +9,25 @@ namespace UI
 {
     public class MainScreen : DTNView
     {
-        [FoldoutGroup("References")]
         [SerializeField] private CanvasGroup canvasGroup;
 
-        [FoldoutGroup("User Info")]
         [SerializeField] private Image userPicture;
-        [FoldoutGroup("User Info")]
         [SerializeField] private TextMeshProUGUI userNameText;
 
-        [FoldoutGroup("Status Group")]
         [SerializeField] private TextMeshProUGUI statusCoinText;
-        [FoldoutGroup("Status Group")]
         [SerializeField] private Button statusCoinAddButton;
 
-        [FoldoutGroup("Status Group")]
         [SerializeField] private TextMeshProUGUI statusGemText;
-        [FoldoutGroup("Status Group")]
         [SerializeField] private Button statusGemAddButton;
 
-        [FoldoutGroup("Buttons")]
         [SerializeField] private Button buttonSetting;
-        [FoldoutGroup("Buttons")]
         [SerializeField] private Button buttonInventory;
-        [FoldoutGroup("Buttons")]
         [SerializeField] private Button buttonShop;
-        [FoldoutGroup("Buttons")]
         [SerializeField] private Button buttonFriends;
-        [FoldoutGroup("Buttons")]
         [SerializeField] private Button buttonClan;
-        [FoldoutGroup("Buttons")]
         [SerializeField] private Button buttonCraft;
-        [FoldoutGroup("Buttons")]
         [SerializeField] private Button buttonProjects;
 
-        [FoldoutGroup("Config")]
         [SerializeField] private float fadeDuration = 0.5f;
 
         private DataController dataController;
@@ -86,6 +71,7 @@ namespace UI
             canvasGroup.alpha = 0;
             canvasGroup.DOFade(1, fadeDuration);
             UpdateUI();
+
         }
 
         public override void Hide()
@@ -154,7 +140,9 @@ namespace UI
         private void OnButtonCraftClicked()
         {
             Debug.Log("Craft button clicked");
-            // Implement logic to open craft screen
+            var popup_AICraft = DTNWindow.FindTopWindow().ShowSubView<Popup_AICraftOption>();
+            popup_AICraft.InitIfNeed();
+            popup_AICraft.Show();
         }
 
         private void OnButtonProjectsClicked()

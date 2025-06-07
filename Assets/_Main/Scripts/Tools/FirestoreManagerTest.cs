@@ -17,7 +17,6 @@ public class FirestoreManagerTest : MonoBehaviour
         }
 
         await TestUserDocument();
-        await TestModelDocument();
     }
 
     private async Task TestUserDocument()
@@ -46,44 +45,5 @@ public class FirestoreManagerTest : MonoBehaviour
         {
             Debug.LogError("Failed to fetch user document.");
         }
-    }
-
-    private async Task TestModelDocument()
-    {
-        Debug.Log("Starting Model document test...");
-
-        string modelId = "model_xyz789";
-
-        var model = new FirestoreManager.Model
-        {
-            ownerId = "user_abc123",
-            title = "Robot Lắp Ráp Mini",
-            description = "Mô hình robot đơn giản với 45 brick.",
-            tags = new List<string> { "robot", "mini", "tech" },
-            ldrUrl = "gs://your-app/models/xyz789.ldr",
-            previewImageUrl = "https://example.com/preview.png",
-            brickCount = 45,
-            isPublic = true,
-            likes = 132,
-            downloads = 81,
-            createdAt = Firebase.Firestore.Timestamp.FromDateTime(DateTime.UtcNow),
-            updatedAt = Firebase.Firestore.Timestamp.FromDateTime(DateTime.UtcNow)
-        };
-
-        await firestoreManager.SetModelAsync(modelId, model);
-
-        FirestoreManager.Model fetchedModel = await firestoreManager.GetModelAsync(modelId);
-        if (fetchedModel != null)
-        {
-            Debug.Log($"Model fetched: id={modelId}, ownerId={fetchedModel.ownerId}, title={fetchedModel.title}, likes={fetchedModel.likes}, downloads={fetchedModel.downloads}");
-        }
-        else
-        {
-            Debug.LogError("Failed to fetch model document.");
-        }
-
-        // Test increment likes and downloads
-        await firestoreManager.IncrementModelLikesAsync(modelId, 1);
-        await firestoreManager.IncrementModelDownloadsAsync(modelId, 1);
     }
 }

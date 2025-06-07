@@ -41,11 +41,7 @@ namespace API
         public IEnumerator GenImageCoroutine(string prompt, Action<GenImageResponseBody, string> callback)
         {
             // Lấy user_id từ FirebaseAuthManager
-            string userId = "Right_test"; // Default fallback
-            if (FirebaseAuthManager.Instance != null && !string.IsNullOrEmpty(FirebaseAuthManager.Instance.UserId))
-            {
-                userId = FirebaseAuthManager.Instance.UserId;
-            }
+            string userId = FirebaseAuthManager.Instance.GetCurrentUserId();
 
             var requestData = new GenImageRequest
             {
@@ -65,11 +61,7 @@ namespace API
 
                 yield return www.SendWebRequest();
 
-#if UNITY_2020_1_OR_NEWER
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
-#else
-                if (www.isNetworkError || www.isHttpError)
-#endif
                 {
                     string errorMsg = $"Lỗi kết nối: {www.error} - Response Code: {www.responseCode}";
                     Debug.LogError(errorMsg);
@@ -77,27 +69,18 @@ namespace API
                 }
                 else
                 {
-                    try
-                    {
-                        Debug.Log($"Response nhận được: {www.downloadHandler.text}");
-                        var responseBody = JsonUtility.FromJson<GenImageResponseBody>(www.downloadHandler.text);
-                        Debug.Log(responseBody.image);
+                    Debug.Log($"Response nhận được: {www.downloadHandler.text}");
+                    var responseBody = JsonUtility.FromJson<GenImageResponseBody>(www.downloadHandler.text);
+                    Debug.Log(responseBody.image);
 
-                        if (responseBody != null && !string.IsNullOrEmpty(responseBody.image))
-                        {
-                            Debug.Log("Tạo ảnh thành công!");
-                            callback(responseBody, null);
-                        }
-                        else
-                        {
-                            callback(null, "Response không hợp lệ hoặc thiếu dữ liệu ảnh");
-                        }
-                    }
-                    catch (Exception e)
+                    if (responseBody != null && !string.IsNullOrEmpty(responseBody.image))
                     {
-                        string errorMsg = $"Lỗi parse JSON: {e.Message}";
-                        Debug.LogError(errorMsg);
-                        callback(null, errorMsg);
+                        Debug.Log("Tạo ảnh thành công!");
+                        callback(responseBody, null);
+                    }
+                    else
+                    {
+                        callback(null, "Response không hợp lệ hoặc thiếu dữ liệu ảnh");
                     }
                 }
             }

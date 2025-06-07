@@ -11,10 +11,12 @@ using static FirestoreManager; // For User and Model classes
 [RequireComponent(typeof(FirestoreManager))]
 public class DataController : MonoBehaviour
 {
+    public static DataController Instance;
     private FirestoreManager firestoreManager;
 
     private void Awake()
     {
+        Instance = this;
         DontDestroyOnLoad(gameObject);
         firestoreManager = GetComponent<FirestoreManager>();
         if (firestoreManager == null)
@@ -48,6 +50,15 @@ public class DataController : MonoBehaviour
     /// <summary>
     /// Load user info by UID.
     /// </summary>
+    public async Task LoadUserAsync()
+    {
+        FirestoreManager.User user = await DataController.Instance.LoadUserAsync(FirebaseAuthManager.Instance.GetCurrentUserId());
+        UserInfo.Instance.SetUserData(user);
+    }
+
+    /// <summary>
+    /// Load user info by UID.
+    /// </summary>
     public async Task<User> LoadUserAsync(string uid)
     {
         if (firestoreManager == null)
@@ -67,91 +78,4 @@ public class DataController : MonoBehaviour
     }
 
     #endregion
-
-    #region Model CRUD
-
-    /// <summary>
-    /// Create or update a model in Firestore.
-    /// </summary>
-    public async Task CreateOrUpdateModelAsync(string modelId, Model model)
-    {
-        if (firestoreManager == null)
-        {
-            Debug.LogError("FirestoreManager is not initialized.");
-            return;
-        }
-        try
-        {
-            await firestoreManager.SetModelAsync(modelId, model);
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-    }
-
-    /// <summary>
-    /// Load model info by modelId.
-    /// </summary>
-    public async Task<Model> LoadModelAsync(string modelId)
-    {
-        if (firestoreManager == null)
-        {
-            Debug.LogError("FirestoreManager is not initialized.");
-            return null;
-        }
-        try
-        {
-            return await firestoreManager.GetModelAsync(modelId);
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Increment the likes count for a model.
-    /// </summary>
-    public async Task IncrementModelLikesAsync(string modelId, int increment = 1)
-    {
-        if (firestoreManager == null)
-        {
-            Debug.LogError("FirestoreManager is not initialized.");
-            return;
-        }
-        try
-        {
-            await firestoreManager.IncrementModelLikesAsync(modelId, increment);
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-    }
-
-    /// <summary>
-    /// Increment the downloads count for a model.
-    /// </summary>
-    public async Task IncrementModelDownloadsAsync(string modelId, int increment = 1)
-    {
-        if (firestoreManager == null)
-        {
-            Debug.LogError("FirestoreManager is not initialized.");
-            return;
-        }
-        try
-        {
-            await firestoreManager.IncrementModelDownloadsAsync(modelId, increment);
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-    }
-
-    #endregion
-
-    // Additional CRUD methods (Delete, List, etc.) can be added as needed.
 }

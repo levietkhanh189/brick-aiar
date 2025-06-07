@@ -13,24 +13,32 @@ MonoBehaviour:
   m_Name: ViewInfoSystem
   m_EditorClassIdentifier: 
   ViewInfos:
-  - ViewName: AICraftMenuScreen
-    Address: Views/AICraftMenuScreen
-  - ViewName: AICraftOptionPopup
-    Address: Views/AICraftOptionPopup
   - ViewName: IntroScreen
     Address: Views/IntroScreen
   - ViewName: InventoryScreen
     Address: Views/InventoryScreen
   - ViewName: LoadingScreen
     Address: Views/LoadingScreen
+  - ViewName: LoadScreen
+    Address: Views/LoadScreen
   - ViewName: MainScreen
     Address: Views/MainScreen
+  - ViewName: Popup_AICraftOption
+    Address: Views/Popup_AICraftOption
+  - ViewName: Popup_AIImageToLego
+    Address: Views/Popup_AIImageToLego
+  - ViewName: Popup_AITextToLego
+    Address: Views/Popup_AITextToLego
   - ViewName: Popup_CheckMail
     Address: Views/Popup_CheckMail
+  - ViewName: Popup_CreateProject
+    Address: Views/Popup_CreateProject
   - ViewName: Popup_SignIn
     Address: Views/Popup_SignIn
   - ViewName: Popup_SignUp
     Address: Views/Popup_SignUp
+  - ViewName: ProjectScreen
+    Address: Views/ProjectScreen
   - ViewName: SettingsScreen
     Address: Views/SettingsScreen
   - ViewName: ShopScreen

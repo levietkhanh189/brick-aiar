@@ -9,28 +9,17 @@ namespace UI
 {
     public class Popup_SignIn : DTNView
     {
-        [FoldoutGroup("References")]
         [SerializeField] private CanvasGroup canvasGroup;
-        [FoldoutGroup("References")]
         [SerializeField] private TMP_InputField usernameInput;
-        [FoldoutGroup("References")]
         [SerializeField] private TMP_InputField passwordInput;
-        [FoldoutGroup("References")]
         [SerializeField] private Button signInButton;
-        [FoldoutGroup("References")]
         [SerializeField] private Button closeButton;
-        [FoldoutGroup("References")]
         [SerializeField] private Button forgotPasswordButton;
-        [FoldoutGroup("References")]
         [SerializeField] private Button signUpButton;
-        [FoldoutGroup("References")]
         [SerializeField] private Toggle rememberMeToggle;
-        [FoldoutGroup("References")]
         [SerializeField] private TextMeshProUGUI errorText;
 
-        [FoldoutGroup("Config")]
         [SerializeField] private float fadeDuration = 0.5f;
-        [FoldoutGroup("Config")]
         [SerializeField] private float errorDisplayDuration = 3f;
 
         private FirebaseAuthManager authManager;
@@ -92,10 +81,8 @@ namespace UI
 
             try
             {
-                await authManager.SignIn();
-                authManager.UpdateUserInfo();
-                FirestoreManager.User user = await dataController.LoadUserAsync(authManager.UserId);
-                UserInfo.Instance.SetUserData(user);
+                await authManager.SignIn(usernameInput.text, passwordInput.text);
+                await DataController.Instance.LoadUserAsync();
                 loadingScreen.SetProgress(1f);
                 if (rememberMeToggle != null && rememberMeToggle.isOn)
                 {
@@ -143,7 +130,7 @@ namespace UI
 
             try
             {
-                await authManager.ResetPassword();
+                await authManager.ResetPassword(usernameInput.text);
                 loadingScreen.SetProgress(1f);
                 ShowError("Password reset email has been sent. Please check your inbox.");
             }

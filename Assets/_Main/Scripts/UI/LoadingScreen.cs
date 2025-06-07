@@ -2,26 +2,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
-using Sirenix.OdinInspector;
 
 namespace UI
 {
     public class LoadingScreen : DTNView
     {
-        [FoldoutGroup("References")]
         [SerializeField] private CanvasGroup canvasGroup;
-        [FoldoutGroup("References")]
         [SerializeField] private Image progressBar;
-        [FoldoutGroup("References")]
         [SerializeField] private TextMeshProUGUI loadingText;
-        [FoldoutGroup("References")]
         [SerializeField] private TextMeshProUGUI progressText;
 
-        [FoldoutGroup("Configuration")]
         [SerializeField] private float fadeDuration = 0.5f;
-        [FoldoutGroup("Configuration")]
         [SerializeField] private string[] loadingMessages;
-        [FoldoutGroup("Configuration")]
         [SerializeField] private float messageChangeInterval = 2f;
 
         private float currentProgress;

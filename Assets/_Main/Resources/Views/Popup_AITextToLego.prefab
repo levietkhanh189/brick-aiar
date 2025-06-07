@@ -1046,6 +1046,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7170521375542358280}
   - component: {fileID: 479117937402059594}
+  - component: {fileID: 3878919882183644966}
+  - component: {fileID: 5352973887589243364}
   m_Layer: 0
   m_Name: Popup_AITextToLego
   m_TagString: Untagged
@@ -1096,6 +1098,42 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3878919882183644966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145150774706652841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9abb489a80b824f7ea701e9579ce9cdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _subViews: []
+  parentView: {fileID: 0}
+  _history: []
+  content: {fileID: 7170521375542358280}
+  isInit: 0
+  canvasGroup: {fileID: 5352973887589243364}
+  buttonClose: {fileID: 7118025721202052639}
+  promt: {fileID: 7172844223243275603}
+  buttonCraftLego: {fileID: 8247028096345886112}
+  details: {fileID: 2800841548185991403}
+  foregroundRatio: {fileID: 5208803238457295187}
+  fadeDuration: 0.5
+--- !u!225 &5352973887589243364
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145150774706652841}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2668589392162224098
 GameObject:
   m_ObjectHideFlags: 0
@@ -3153,7 +3191,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -3976,7 +4014,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}

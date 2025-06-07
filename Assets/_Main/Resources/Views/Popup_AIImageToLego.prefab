@@ -1387,7 +1387,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1415,7 +1415,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.58
+  m_Value: 0.8
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1613,7 +1613,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1638,10 +1638,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 3768483299447423397}
   m_HandleRect: {fileID: 3522199737617734063}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: 0.02
+  m_MaxValue: 0.08
   m_WholeNumbers: 0
-  m_Value: 0.58
+  m_Value: 0.05
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1783,7 +1783,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Craft Text To Lego
+  m_text: Craft Image To Lego
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc2cc93475f76427c86a8262bee36b88, type: 2}
   m_sharedMaterial: {fileID: 2269793554123077917, guid: dc2cc93475f76427c86a8262bee36b88,
@@ -3615,6 +3615,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2590133670199232096}
   - component: {fileID: 9149804461694286918}
+  - component: {fileID: 8209918135961068703}
+  - component: {fileID: 5952912809323478268}
   m_Layer: 0
   m_Name: Popup_AIImageToLego
   m_TagString: Untagged
@@ -3665,6 +3667,44 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8209918135961068703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692622693222756479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 785d81eb5ec8140ada6e73aa3884155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _subViews: []
+  parentView: {fileID: 0}
+  _history: []
+  content: {fileID: 0}
+  isInit: 0
+  canvasGroup: {fileID: 5952912809323478268}
+  buttonClose: {fileID: 5056136656747666466}
+  buttonLoadImage: {fileID: 5167393455775588819}
+  buttonCraftLego: {fileID: 4340959616160684669}
+  details: {fileID: 1189629961097022370}
+  foregroundRatio: {fileID: 4018606625966321084}
+  fadeDuration: 0.5
+  texture: {fileID: 2800000, guid: 16de398b62ab4446d889f4d9c2125726, type: 3}
+  image: {fileID: 1724944916085436136}
+--- !u!225 &5952912809323478268
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692622693222756479}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8950084951370769437
 GameObject:
   m_ObjectHideFlags: 0
