@@ -81,6 +81,8 @@ namespace API
                     {
                         Debug.Log($"Response nhận được: {www.downloadHandler.text}");
                         var responseBody = JsonUtility.FromJson<GenImageResponseBody>(www.downloadHandler.text);
+                        Debug.Log(responseBody.image);
+
                         if (responseBody != null && !string.IsNullOrEmpty(responseBody.image))
                         {
                             Debug.Log("Tạo ảnh thành công!");

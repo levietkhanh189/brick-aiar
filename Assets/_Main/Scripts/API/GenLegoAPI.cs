@@ -63,7 +63,7 @@ namespace API
         public IEnumerator GenLegoCoroutine(string base64Image, Action<GenLegoResponseBody, string> callback, 
             float details = 0.02f, float foregroundRatio = 0.85f)
         {
-            // Lấy user_id từ FirebaseAuthManager
+            // Lấy user_id từ FirebaseAuthManager https://lvm3bok3icqnfhj2o7llcfxbbe0vwbxv.lambda-url.us-east-1.on.aws/
             string userId = "Right_test"; // Default fallback
             if (FirebaseAuthManager.Instance != null && !string.IsNullOrEmpty(FirebaseAuthManager.Instance.UserId))
             {
@@ -84,7 +84,7 @@ namespace API
 
             string jsonData = JsonUtility.ToJson(requestData);
             Debug.Log($"Gửi request tạo LEGO: User ID = {userId}, Details = {details}, ForegroundRatio = {foregroundRatio}");
-
+            Debug.Log("bodyRaw jsonData : " + jsonData);
             using (UnityWebRequest www = new UnityWebRequest(apiUrl, "POST"))
             {
                 byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
@@ -93,6 +93,7 @@ namespace API
                 www.SetRequestHeader("Content-Type", "application/json");
 
                 yield return www.SendWebRequest();
+                Debug.Log($"Response nhận được: {www.downloadHandler.text}");
 
 #if UNITY_2020_1_OR_NEWER
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)

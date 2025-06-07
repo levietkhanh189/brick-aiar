@@ -16,15 +16,24 @@ public class AIFlowDemo : MonoBehaviour
     [LabelText("Prompt để tạo ảnh")]
     public string imagePrompt = "a red sports car on a mountain road";
 
+    [TabGroup("Input")]
+    [TextArea(2, 4)]
+    [LabelText("Base64 để tạo Lego")]
+    public string imageBase = "a red sports car on a mountain road";
+
+    [TabGroup("Input")]
+    [TextArea(1, 3)]
+    [LabelText("S3 URL để tải LDR")]
+    [InfoBox("Nhập đường link S3 của file LDR để tải xuống trực tiếp")]
+    public string s3LdrUrl = "";
+
     [TabGroup("Settings")]
-    [BoxGroup("Settings/LEGO Configuration")]
     [Range(0.01f, 0.1f)]
     [LabelText("Chi tiết LEGO")]
     [InfoBox("Giá trị thấp hơn = chi tiết cao hơn")]
     public float legoDetails = 0.02f;
     
     [TabGroup("Settings")]
-    [BoxGroup("Settings/LEGO Configuration")]
     [Range(0.1f, 1.0f)]
     [LabelText("Tỷ lệ foreground")]
     [InfoBox("Tỷ lệ loại bỏ background")]
@@ -99,6 +108,20 @@ public class AIFlowDemo : MonoBehaviour
     }
 
     [TabGroup("Actions")]
+    [Button("🧱 Tạo LEGO từ Base64", ButtonSizes.Large)]
+    public void GenerateLegoFromBase64()
+    {
+        currentImageBase64 = imageBase;
+        if (string.IsNullOrEmpty(imageBase))
+        {
+            UpdateStatus("Cần có ảnh trước khi tạo LEGO!");
+            return;
+        }
+
+        StartCoroutine(GenerateLegoFlow());
+    }
+
+    [TabGroup("Actions")]
     [Button("📥 Tải File LDR", ButtonSizes.Medium)]
     [EnableIf("@currentLegoData != null && !string.IsNullOrEmpty(currentLegoData.model_url)")]
     public void DownloadLDRFile()
@@ -110,17 +133,17 @@ public class AIFlowDemo : MonoBehaviour
     }
 
     [TabGroup("Actions")]
-    [Button("🗑️ Reset Demo", ButtonSizes.Medium)]
-    public void ResetDemo()
+    [Button("🔗 Tải LDR từ S3 URL", ButtonSizes.Medium)]
+    [EnableIf("@!string.IsNullOrEmpty(s3LdrUrl)")]
+    public void DownloadLDRFromS3Url()
     {
-        currentImageBase64 = null;
-        currentRequestId = null;
-        currentLegoData = null;
-        generatedImage = null;
-        logs.Clear();
-        logMessages = "";
-        
-        UpdateStatus("Đã reset. Sẵn sàng cho demo mới.");
+        if (string.IsNullOrEmpty(s3LdrUrl))
+        {
+            UpdateStatus("Vui lòng nhập S3 URL!");
+            return;
+        }
+
+        StartCoroutine(DownloadS3LDRFlow());
     }
 
     [TabGroup("Actions")]
@@ -211,7 +234,7 @@ public class AIFlowDemo : MonoBehaviour
             if (!string.IsNullOrEmpty(ldrContent))
             {
                 // Lưu file LDR
-                string fileName = LDRDownloader.GetFileNameFromS3Url(currentLegoData.model_url);
+                string fileName = LDRDownloader.GetFileNameFromS3Path(currentLegoData.model_url);
                 string savedPath = LDRDownloader.SaveLDRToLocal(ldrContent, fileName);
                 
                 if (!string.IsNullOrEmpty(savedPath))
@@ -230,6 +253,50 @@ public class AIFlowDemo : MonoBehaviour
             {
                 UpdateStatus("❌ File LDR rỗng");
                 LogMessage("❌ Nội dung file LDR rỗng");
+            }
+        });
+    }
+
+    /// <summary>
+    /// Flow tải xuống file LDR từ S3 URL được nhập thủ công
+    /// </summary>
+    private IEnumerator DownloadS3LDRFlow()
+    {
+        UpdateStatus("📥 Đang tải file LDR từ S3 URL...");
+        LogMessage($"📥 Bắt đầu tải file LDR từ URL: {s3LdrUrl}");
+
+        yield return LDRDownloader.DownloadLDRFile(s3LdrUrl, (ldrContent, error) =>
+        {
+            if (error != null)
+            {
+                UpdateStatus($"❌ Lỗi tải file LDR từ S3: {error}");
+                LogMessage($"❌ Lỗi tải LDR từ S3: {error}");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(ldrContent))
+            {
+                // Lưu file LDR
+                string fileName = LDRDownloader.GetFileNameFromS3Path(s3LdrUrl);
+                string savedPath = LDRDownloader.SaveLDRToLocal(ldrContent, fileName);
+                
+                if (!string.IsNullOrEmpty(savedPath))
+                {
+                    UpdateStatus("✅ Tải và lưu file LDR từ S3 thành công!");
+                    LogMessage($"✅ File LDR từ S3 đã lưu tại: {savedPath}");
+                    LogMessage($"📄 Kích thước file: {ldrContent.Length} characters");
+                    LogMessage($"📂 Tên file: {fileName}.ldr");
+                }
+                else
+                {
+                    UpdateStatus("❌ Lỗi lưu file LDR từ S3");
+                    LogMessage("❌ Không thể lưu file LDR từ S3");
+                }
+            }
+            else
+            {
+                UpdateStatus("❌ File LDR từ S3 rỗng");
+                LogMessage("❌ Nội dung file LDR từ S3 rỗng");
             }
         });
     }
