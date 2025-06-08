@@ -10,6 +10,8 @@ namespace Battlehub.RTHandles.Demo
     public class DemoEditor : SimpleEditor, IRTEState
     {
         [SerializeField]
+        public GameObject player;
+        [SerializeField]
         private Button m_focusButton = null;
 
         [SerializeField]
@@ -35,6 +37,9 @@ namespace Battlehub.RTHandles.Demo
 
         [SerializeField]
         private GameObject m_gameCamera = null;
+
+        [SerializeField]
+        private GameObject playerInstance;
 
         private IResourcePreviewUtility m_resourcePreview;
 
@@ -186,12 +191,18 @@ namespace Battlehub.RTHandles.Demo
 
         private IEnumerator CoPlay()
         {
+            playerInstance = Instantiate(player, this.transform.parent);
+            if(CameraFlow.Instance)
+                CameraFlow.Instance.StartFlow(playerInstance.transform);
             yield return new WaitForEndOfFrame();
             Editor.IsPlaying = true;
         }
 
         private void OnStopClick()
         {
+            if (CameraFlow.Instance)
+                CameraFlow.Instance.StopFlow();
+            Destroy(playerInstance);
             Editor.IsPlaying = false;
         }
 

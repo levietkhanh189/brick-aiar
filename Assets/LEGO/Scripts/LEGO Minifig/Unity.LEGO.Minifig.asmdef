@@ -1,7 +1,9 @@
 {
     "name": "Unity.LEGO.Minifig",
+    "rootNamespace": "",
     "references": [
-        "GUID:7f7d1af65c2641843945d409d28f2e20"
+        "GUID:7f7d1af65c2641843945d409d28f2e20",
+        "GUID:f3ea96bf38ee948f09b891bf04126abb"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

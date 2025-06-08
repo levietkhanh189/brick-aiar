@@ -94,8 +94,8 @@ namespace Battlehub.RTHandles
 
             if (rteCamera != null)
             {
-                rteCamera.RenderersCache.Remove(GetRenderers());
-                rteCamera.RenderersCache.Refresh();
+                //rteCamera.RenderersCache.Remove(GetRenderers());
+                //rteCamera.RenderersCache.Refresh();
             }
         }
 

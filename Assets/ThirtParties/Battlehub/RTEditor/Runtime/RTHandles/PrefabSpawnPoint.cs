@@ -44,6 +44,11 @@ namespace Battlehub.RTHandles
         {
             get { return m_scene; }
         }
+
+        public void SetPrefab(GameObject prefab)
+        {
+            m_prefab = prefab;
+        }
         
         protected virtual void Start()
         {

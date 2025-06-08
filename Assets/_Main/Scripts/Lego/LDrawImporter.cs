@@ -8,7 +8,7 @@ public class LDrawImporter : MonoBehaviour
     [SerializeField] private string ldrawFilePath = "Assets/_Main/Scripts/Lego/v7.ldr";
     [SerializeField] private Vector3 scaleFactor = new Vector3(0.05f, 0.05f, 0.05f); // Tỷ lệ chuyển đổi từ LDU sang Unity
     public List<Material> materials = new List<Material>();
-    private GameObject currentModel;
+    public GameObject currentModel;
 
     [SerializeField] private bool isDeleteOld = true;
     
