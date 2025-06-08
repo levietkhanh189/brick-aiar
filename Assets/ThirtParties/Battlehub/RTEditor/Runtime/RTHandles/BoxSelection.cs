@@ -476,6 +476,8 @@ namespace Battlehub.RTHandles
                     MeshFilter meshFilter = go.GetComponent<MeshFilter>();
                     if (meshFilter != null && meshFilter.sharedMesh != null)
                     {
+                        if(!meshFilter.sharedMesh.isReadable)
+                            return;
                         Vector3[] vertices = meshFilter.sharedMesh.vertices;
 
                         for (int i = 0; i < vertices.Length; ++i)

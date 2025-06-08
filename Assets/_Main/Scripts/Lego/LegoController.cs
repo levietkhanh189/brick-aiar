@@ -12,7 +12,7 @@ public class LegoController : MonoBehaviour
 
     void Start()
     {
-        FlyInGatherEffect(radius, duration, easeType);
+        //FlyInGatherEffect(radius, duration, easeType);
     }
 
     public void Init(Material material)
