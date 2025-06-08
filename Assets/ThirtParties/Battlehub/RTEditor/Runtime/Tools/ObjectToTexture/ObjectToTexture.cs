@@ -95,7 +95,7 @@ namespace Battlehub.Utils
                         {
                             continue;
                         }
-                        DestroyImmediate(scripts[i]);
+                        //DestroyImmediate(scripts[i]);
                     }
                 }
 

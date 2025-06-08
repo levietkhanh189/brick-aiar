@@ -11,18 +11,24 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Main/Scenes/RuntimeScene/MainScene.unity
     guid: 374aeb0330df94a07ad0219a9947f861
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Main/Scenes/RuntimeScene/CraftViewer3D.unity
     guid: 7d3324efb35604c549d26f0593bfe717
-  - enabled: 0
+  - enabled: 1
+    path: Assets/_Main/Scenes/RuntimeScene/CraftViewerAR.unity
+    guid: be899609b818f415ca534193c7e6501a
+  - enabled: 1
+    path: Assets/_Main/Scenes/RuntimeScene/ProjectScene3D.unity
+    guid: e667b443ec6184478bb572471a3edc8d
+  - enabled: 1
     path: Assets/LEGO/Scenes/Level 2.unity
     guid: d1593065c85be5e4095ede1ca0cbf391
-  - enabled: 0
-    path: Assets/Samples/XR Interaction Toolkit/3.0.6/AR Starter Assets/ARDemoScene.unity
-    guid: da4db6c21a88243878fecfe160c1be3b
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Main/Scenes/RuntimeScene/ProjectSceneAR.unity
     guid: d25ed0f9d9d20471bb4128d3c023a6ca
+  - enabled: 1
+    path: Assets/Samples/XR Interaction Toolkit/3.0.6/AR Starter Assets/ARDemoScene.unity
+    guid: da4db6c21a88243878fecfe160c1be3b
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af,
       type: 2}
