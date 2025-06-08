@@ -67,7 +67,7 @@ public class AIFlowDemo : MonoBehaviour
     [TabGroup("Results")]
     [ShowInInspector, ReadOnly]
     [LabelText("LEGO Model Data")]
-    private LegoModelData currentLegoData;
+    private API.LegoModelData currentLegoData;
 
     [TabGroup("Logs")]
     [ShowInInspector, ReadOnly]
@@ -230,7 +230,10 @@ public class AIFlowDemo : MonoBehaviour
         UpdateStatus("🔄 Đang gửi request tạo LEGO...");
         LogMessage($"🧱 Bắt đầu tạo LEGO với Details: {legoDetails}, ForegroundRatio: {foregroundRatio}");
 
-        yield return APIManager.Instance.CallGenLego(currentImageBase64, OnLegoCompleted, legoDetails, foregroundRatio);
+        yield return APIManager.Instance.CallGenLego(currentImageBase64, (API.LegoModelData modelData, string error) =>
+        {
+            OnLegoCompleted(modelData, error);
+        }, legoDetails, foregroundRatio);
     }
 
     /// <summary>
@@ -326,7 +329,7 @@ public class AIFlowDemo : MonoBehaviour
     /// <summary>
     /// Callback khi quá trình tạo LEGO hoàn thành (từ Firebase)
     /// </summary>
-    private void OnLegoCompleted(LegoModelData modelData, string error)
+    private void OnLegoCompleted(API.LegoModelData modelData, string error)
     {
         if (error != null)
         {

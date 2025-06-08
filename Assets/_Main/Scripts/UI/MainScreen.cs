@@ -116,7 +116,10 @@ namespace UI
         private void OnButtonInventoryClicked()
         {
             Debug.Log("Inventory button clicked");
-            // Implement logic to open inventory screen
+            Debug.Log("Craft button clicked");
+            var inventoryScreen = DTNWindow.FindTopWindow().ShowSubView<InventoryScreen>();
+            inventoryScreen.InitIfNeed();
+            inventoryScreen.Show();
         }
 
         private void OnButtonShopClicked()
@@ -148,7 +151,9 @@ namespace UI
         private void OnButtonProjectsClicked()
         {
             Debug.Log("Projects button clicked");
-            // Implement logic to open projects screen
+            var projectScreen = DTNWindow.FindTopWindow().ShowSubView<ProjectScreen>();
+            projectScreen.InitIfNeed();
+            projectScreen.Show();
         }
 
         public override void OnDestroy()

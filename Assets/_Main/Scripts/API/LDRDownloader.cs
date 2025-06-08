@@ -7,19 +7,16 @@ using UnityEngine.Networking;
 
 namespace API
 {
-    /// <summary>
-    /// Utility class để tải xuống file LDR từ API presigned URL
-    /// </summary>
     public static class LDRDownloader
     {
         private const string API_URL = "https://lvm3bok3icqnfhj2o7llcfxbbe0vwbxv.lambda-url.us-east-1.on.aws/";
 
         [System.Serializable]
-        public class GetPresignedUrlRequest
+        public class APIRequest
         {
             public string path = "/get";
             public string user_id;
-            public OptionsData options;
+            public OptionsData options = new OptionsData();
             public string s3_path;
 
             [System.Serializable]
@@ -30,281 +27,218 @@ namespace API
         }
 
         [System.Serializable]
-        public class GetPresignedUrlResponse
+        public class APIResponse
         {
-            public string requestId;
-            public string status;
             public string modelUrl;
+            public string status;
+        }
+
+        [System.Serializable]
+        private class APIResult
+        {
+            public string url;
+            public string error;
         }
 
         /// <summary>
-        /// Tải xuống file LDR từ S3 path thông qua API presigned URL
+        /// Tải file LDR từ S3 path
         /// </summary>
-        /// <param name="userId">ID của user</param>
-        /// <param name="s3Path">Đường dẫn S3 của file LDR</param>
-        /// <param name="onComplete">Callback với file content (string) hoặc error</param>
+        public static void DownloadLDR(string userId, string s3Path, Action<string, string> onComplete)
+        {
+            CoroutineRunner.Instance.StartCoroutine(DownloadProcess(userId, s3Path, onComplete));
+        }
+
+        /// <summary>
+        /// Wrapper method để tương thích với AIFlowDemo
+        /// </summary>
+        public static IEnumerator DownloadLDRFile(string s3Url, Action<string, string> onComplete)
+        {
+            string userId = FirebaseAuthManager.Instance.GetCurrentUserId();
+            yield return DownloadProcess(userId, s3Url, onComplete);
+        }
+
+        /// <summary>
+        /// Wrapper method để tương thích với AIFlowDemo
+        /// </summary>
         public static void DownloadLDRFileFromS3Path(string userId, string s3Path, Action<string, string> onComplete)
         {
-            LDRDownloaderHelper.Instance.StartCoroutineHelper(DownloadLDRFileFromS3PathCoroutine(userId, s3Path, onComplete));
+            CoroutineRunner.Instance.StartCoroutine(DownloadProcess(userId, s3Path, onComplete));
         }
 
-        /// <summary>
-        /// Coroutine để tải xuống file LDR từ S3 path thông qua API presigned URL
-        /// </summary>
-        private static IEnumerator DownloadLDRFileFromS3PathCoroutine(string userId, string s3Path, Action<string, string> onComplete)
+        private static IEnumerator DownloadProcess(string userId, string s3Path, Action<string, string> onComplete)
         {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(s3Path))
+            // Bước 1: Lấy presigned URL
+            var apiResult = new APIResult();
+            yield return GetPresignedURL(userId, s3Path, apiResult);
+
+            if (!string.IsNullOrEmpty(apiResult.error))
             {
-                onComplete?.Invoke(null, "User ID hoặc S3 path không hợp lệ");
+                onComplete?.Invoke(null, apiResult.error);
                 yield break;
             }
 
-            Debug.Log($"Bắt đầu lấy presigned URL cho file LDR: {s3Path}");
-
-            // Bước 1: Gọi API để lấy presigned URL
-            string presignedUrl = null;
-            string error = null;
-            bool completed = false;
-
-            yield return GetPresignedUrl(userId, s3Path, (url, err) =>
-            {
-                presignedUrl = url;
-                error = err;
-                completed = true;
-            });
-
-            yield return new WaitUntil(() => completed);
-
-            if (!string.IsNullOrEmpty(error))
-            {
-                onComplete?.Invoke(null, error);
-                yield break;
-            }
-
-            // Bước 2: Tải xuống file từ presigned URL
-            yield return DownloadLDRFile(presignedUrl, onComplete);
+            // Bước 2: Tải file từ presigned URL
+            yield return DownloadFile(apiResult.url, onComplete);
         }
 
-        /// <summary>
-        /// Gọi API để lấy presigned URL
-        /// </summary>
-        private static IEnumerator GetPresignedUrl(string userId, string s3Path, Action<string, string> onComplete)
+        private static IEnumerator GetPresignedURL(string userId, string s3Path, APIResult result)
         {
-            var requestData = new GetPresignedUrlRequest
+            var request = new APIRequest
             {
                 user_id = userId,
-                s3_path = s3Path,
-                options = new GetPresignedUrlRequest.OptionsData()
+                s3_path = s3Path
             };
 
-            string jsonData = JsonUtility.ToJson(requestData);
-            Debug.Log($"Gửi request API: {jsonData}");
+            string json = JsonUtility.ToJson(request);
 
-            using (UnityWebRequest www = new UnityWebRequest(API_URL, "POST"))
+            using (var www = new UnityWebRequest(API_URL, "POST"))
             {
-                byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
-                www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                www.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
                 www.downloadHandler = new DownloadHandlerBuffer();
                 www.SetRequestHeader("Content-Type", "application/json");
 
                 yield return www.SendWebRequest();
 
-#if UNITY_2020_1_OR_NEWER
-                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
-#else
-                if (www.isNetworkError || www.isHttpError)
-#endif
+                if (www.result != UnityWebRequest.Result.Success)
                 {
-                    string errorMsg = $"Lỗi gọi API presigned URL: {www.error} - Response Code: {www.responseCode}";
-                    Debug.LogError(errorMsg);
-                    onComplete?.Invoke(null, errorMsg);
+                    result.error = $"API Error: {www.error}";
                 }
                 else
                 {
                     try
                     {
-                        string responseText = www.downloadHandler.text;
-                        Debug.Log($"API Response: {responseText}");
+                        var response = JsonUtility.FromJson<APIResponse>(www.downloadHandler.text);
+                        result.url = response.modelUrl;
 
-                        var response = JsonUtility.FromJson<GetPresignedUrlResponse>(responseText);
-                        
-                        if (!string.IsNullOrEmpty(response.modelUrl))
+                        if (string.IsNullOrEmpty(result.url))
                         {
-                            Debug.Log($"Lấy presigned URL thành công: {response.modelUrl}");
-                            onComplete?.Invoke(response.modelUrl, null);
-                        }
-                        else
-                        {
-                            onComplete?.Invoke(null, $"Response không chứa modelUrl. Status: {response.status}");
+                            result.error = "No URL in response";
                         }
                     }
                     catch (Exception e)
                     {
-                        onComplete?.Invoke(null, $"Lỗi parse response: {e.Message}");
+                        result.error = $"Parse error: {e.Message}";
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Tải xuống file LDR từ presigned URL
-        /// </summary>
-        /// <param name="presignedUrl">Presigned URL của file LDR</param>
-        /// <param name="onComplete">Callback với file content (string) hoặc error</param>
-        /// <returns>Coroutine</returns>
-        public static IEnumerator DownloadLDRFile(string presignedUrl, Action<string, string> onComplete)
+        private static IEnumerator DownloadFile(string url, Action<string, string> onComplete)
         {
-            if (string.IsNullOrEmpty(presignedUrl))
-            {
-                onComplete?.Invoke(null, "Presigned URL không hợp lệ");
-                yield break;
-            }
-
-            Debug.Log($"Bắt đầu tải xuống file LDR từ presigned URL: {presignedUrl}");
-
-            using (UnityWebRequest www = UnityWebRequest.Get(presignedUrl))
+            using (var www = UnityWebRequest.Get(url))
             {
                 yield return www.SendWebRequest();
 
-#if UNITY_2020_1_OR_NEWER
-                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
-#else
-                if (www.isNetworkError || www.isHttpError)
-#endif
+                if (www.result != UnityWebRequest.Result.Success)
                 {
-                    string errorMsg = $"Lỗi tải xuống file LDR: {www.error} - Response Code: {www.responseCode}";
-                    Debug.LogError(errorMsg);
-                    onComplete?.Invoke(null, errorMsg);
+                    onComplete?.Invoke(null, $"Download error: {www.error}");
                 }
                 else
                 {
-                    string ldrContent = www.downloadHandler.text;
-                    if (!string.IsNullOrEmpty(ldrContent))
-                    {
-                        Debug.Log($"Tải xuống file LDR thành công! Size: {ldrContent.Length} characters");
-                        onComplete?.Invoke(ldrContent, null);
-                    }
-                    else
-                    {
-                        onComplete?.Invoke(null, "File LDR rỗng");
-                    }
+                    string content = www.downloadHandler.text;
+                    onComplete?.Invoke(content, null);
                 }
             }
         }
 
         /// <summary>
-        /// Lưu file LDR vào local storage
+        /// Lưu nội dung LDR vào file local
         /// </summary>
-        /// <param name="ldrContent">Nội dung file LDR</param>
-        /// <param name="fileName">Tên file (không cần extension .ldr)</param>
-        /// <returns>Đường dẫn file đã lưu hoặc null nếu lỗi</returns>
-        public static string SaveLDRToLocal(string ldrContent, string fileName)
+        public static string SaveToLocal(string content, string fileName)
         {
             try
             {
-                string folderPath = Path.Combine(Application.persistentDataPath, "LDRFiles");
-                
-                // Tạo thư mục nếu chưa có
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
+                string folder = Path.Combine(Application.persistentDataPath, "LDRFiles");
+                Directory.CreateDirectory(folder);
 
-                string filePath = Path.Combine(folderPath, $"{fileName}.ldr");
-                File.WriteAllText(filePath, ldrContent);
-                
-                Debug.Log($"Đã lưu file LDR: {filePath}");
+                string filePath = Path.Combine(folder, $"{fileName}.ldr");
+                File.WriteAllText(filePath, content);
+
                 return filePath;
             }
             catch (Exception e)
             {
-                Debug.LogError($"Lỗi lưu file LDR: {e.Message}");
+                Debug.LogError($"Save error: {e.Message}");
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Lưu nội dung LDR vào file local - wrapper để tương thích với AIFlowDemo
+        /// </summary>
+        public static string SaveLDRToLocal(string content, string fileName)
+        {
+            return SaveToLocal(content, fileName);
+        }
+
+        /// <summary>
+        /// Đọc file LDR từ local
+        /// </summary>
+        public static string ReadFromLocal(string fileName)
+        {
+            try
+            {
+                string filePath = Path.Combine(Application.persistentDataPath, "LDRFiles", $"{fileName}.ldr");
+                return File.Exists(filePath) ? File.ReadAllText(filePath) : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra file có tồn tại không
+        /// </summary>
+        public static bool FileExists(string fileName)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, "LDRFiles", $"{fileName}.ldr");
+            return File.Exists(filePath);
         }
 
         /// <summary>
         /// Lấy tên file từ S3 path
         /// </summary>
-        /// <param name="s3Path">S3 path</param>
-        /// <returns>Tên file không có extension</returns>
-        public static string GetFileNameFromS3Path(string s3Path)
+        public static string GetFileName(string s3Path)
         {
             try
             {
-                // s3://gen3d-output/GGkMA2w7gjT4d3VZWVmGzbsoVNq2/3844b650-d234-4907-a6e5-7ef8fd091e52/model.ldr
-                string[] parts = s3Path.Split('/');
-                string fileName = Path.GetFileNameWithoutExtension(parts[parts.Length - 1]);
-                return fileName;
+                return Path.GetFileNameWithoutExtension(s3Path.Split('/')[^1]);
             }
             catch
             {
-                return $"lego_model_{DateTime.Now:yyyyMMdd_HHmmss}";
+                return $"model_{DateTime.Now:yyyyMMddHHmmss}";
             }
         }
 
         /// <summary>
-        /// Kiểm tra xem file LDR đã tồn tại trong local storage chưa
+        /// Lấy tên file từ S3 path - wrapper để tương thích với AIFlowDemo
         /// </summary>
-        /// <param name="fileName">Tên file (không cần extension)</param>
-        /// <returns>True nếu file đã tồn tại</returns>
-        public static bool IsLDRFileExists(string fileName)
+        public static string GetFileNameFromS3Path(string s3Path)
         {
-            string folderPath = Path.Combine(Application.persistentDataPath, "LDRFiles");
-            string filePath = Path.Combine(folderPath, $"{fileName}.ldr");
-            return File.Exists(filePath);
-        }
-
-        /// <summary>
-        /// Đọc file LDR từ local storage
-        /// </summary>
-        /// <param name="fileName">Tên file (không cần extension)</param>
-        /// <returns>Nội dung file hoặc null nếu không tồn tại</returns>
-        public static string ReadLocalLDRFile(string fileName)
-        {
-            try
-            {
-                string folderPath = Path.Combine(Application.persistentDataPath, "LDRFiles");
-                string filePath = Path.Combine(folderPath, $"{fileName}.ldr");
-                
-                if (File.Exists(filePath))
-                {
-                    return File.ReadAllText(filePath);
-                }
-                return null;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Lỗi đọc file LDR local: {e.Message}");
-                return null;
-            }
+            return GetFileName(s3Path);
         }
     }
 
     /// <summary>
-    /// Helper class để start coroutine từ static context
+    /// Helper để chạy coroutine từ static context
     /// </summary>
-    public class LDRDownloaderHelper : MonoBehaviour
+    public class CoroutineRunner : MonoBehaviour
     {
-        private static LDRDownloaderHelper _instance;
+        private static CoroutineRunner instance;
         
-        public static LDRDownloaderHelper Instance
+        public static CoroutineRunner Instance
         {
             get
             {
-                if (_instance == null)
+                if (instance == null)
                 {
-                    GameObject go = new GameObject("LDRDownloaderHelper");
-                    _instance = go.AddComponent<LDRDownloaderHelper>();
+                    GameObject go = new GameObject("CoroutineRunner");
+                    instance = go.AddComponent<CoroutineRunner>();
                     DontDestroyOnLoad(go);
                 }
-                return _instance;
+                return instance;
             }
         }
-
-        public void StartCoroutineHelper(IEnumerator coroutine)
-        {
-            StartCoroutine(coroutine);
-        }
     }
-} 
+}

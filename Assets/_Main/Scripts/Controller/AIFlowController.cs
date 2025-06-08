@@ -26,17 +26,17 @@ public class AIFlowController : MonoBehaviour
         GenerateLego(imageBase64, ListenToFirebaseRealtime, details, foregroundRatio);
     }
 
-    public void ListenToFirebaseRealtime(LegoModelData modelData, string id)
+    public void ListenToFirebaseRealtime(API.LegoModelData modelData, string id)
     {
 
     }
 
-    private void GenerateLego(string base64Image, Action<LegoModelData, string> onComplete, float details = 0.02f, float foregroundRatio = 0.85f)
+    private void GenerateLego(string base64Image, Action<API.LegoModelData, string> onComplete, float details = 0.02f, float foregroundRatio = 0.85f)
     {
         StartCoroutine(GenerateLegoFlow(base64Image, onComplete, details, foregroundRatio));
     }
 
-    private IEnumerator GenerateLegoFlow(string base64Image, Action<LegoModelData, string> onComplete, float details = 0.02f, float foregroundRatio = 0.85f)
+    private IEnumerator GenerateLegoFlow(string base64Image, Action<API.LegoModelData, string> onComplete, float details = 0.02f, float foregroundRatio = 0.85f)
     {
         yield return APIManager.Instance.CallGenLego(base64Image, onComplete, details, foregroundRatio);
     }
