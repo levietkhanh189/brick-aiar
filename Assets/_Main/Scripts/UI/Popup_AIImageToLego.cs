@@ -133,11 +133,6 @@ namespace UI
                     // Cập nhật texture cho RawImage
                     image.texture = loadedTexture;
                     
-                    // Cập nhật texture reference để sử dụng trong OnCraftLegoClicked
-                    if (texture != null)
-                    {
-                        DestroyImmediate(texture);
-                    }
                     texture = loadedTexture;
                     
                     Debug.Log($"Đã load thành công ảnh: {loadedTexture.width}x{loadedTexture.height}");
@@ -162,6 +157,7 @@ namespace UI
             {
                 Debug.Log("Craft Lego button clicked");
                 AIFlowController.Instance.CraftImageToLego(TextureToBase64.ConvertToBase64(texture), details.value, foregroundRatio.value);
+                DTNWindow.FindTopWindow().ShowSubView<Popup_CraftWait>();
                 Hide();
             }
             else

@@ -64,6 +64,7 @@ namespace UI
         {
             Debug.Log("Text To Lego button clicked");
             AIFlowController.Instance.CraftTextToLego(promt.text, details.value, foregroundRatio.value);
+            DTNWindow.FindTopWindow().ShowSubView<Popup_CraftWait>();
             Hide();
         }
 

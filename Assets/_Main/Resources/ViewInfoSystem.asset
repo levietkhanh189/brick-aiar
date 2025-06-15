@@ -31,6 +31,8 @@ MonoBehaviour:
     Address: Views/Popup_AITextToLego
   - ViewName: Popup_CheckMail
     Address: Views/Popup_CheckMail
+  - ViewName: Popup_CraftWait
+    Address: Views/Popup_CraftWait
   - ViewName: Popup_CreateProject
     Address: Views/Popup_CreateProject
   - ViewName: Popup_SignIn
